@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/SimpleEffect" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/SimpleSynth" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/audioroute" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/delayeffect" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/externals/oboe/src/aaudio" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/externals/oboe/src/common" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/externals/oboe/src/fifo" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/externals/oboe/src/opensles" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/hostsample" vcs="svn" />
+  </component>
+</project>
