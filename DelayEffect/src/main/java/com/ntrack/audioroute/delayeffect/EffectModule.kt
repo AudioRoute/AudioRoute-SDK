@@ -1,4 +1,4 @@
-package com.ntrack.audioroute.simpleeffect
+package com.audioroute.delay
 
 import com.ntrack.audioroute.AudioModule
 

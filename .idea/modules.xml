@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SimpleEffect/SimpleEffect.iml" filepath="$PROJECT_DIR$/SimpleEffect/SimpleEffect.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SimpleEffect/SimpleEffect.iml" filepath="$PROJECT_DIR$/SimpleEffect/SimpleEffect.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimpleSynth/SimpleSynth.iml" filepath="$PROJECT_DIR$/SimpleSynth/SimpleSynth.iml" />
-      <module fileurl="file://$PROJECT_DIR$/audioroute.iml" filepath="$PROJECT_DIR$/audioroute.iml" />
-      <module fileurl="file://$PROJECT_DIR$/audioroute/audioroute-audioroute.iml" filepath="$PROJECT_DIR$/audioroute/audioroute-audioroute.iml" />
-      <module fileurl="file://$PROJECT_DIR$/audioroute/audioroute-audioroute.iml" filepath="$PROJECT_DIR$/audioroute/audioroute-audioroute.iml" />
+      <module fileurl="file://$PROJECT_DIR$/audiorouteSamples.iml" filepath="$PROJECT_DIR$/audiorouteSamples.iml" />
       <module fileurl="file://$PROJECT_DIR$/delayeffect/delayeffect.iml" filepath="$PROJECT_DIR$/delayeffect/delayeffect.iml" />
-      <module fileurl="file://$PROJECT_DIR$/delayeffect/delayeffect.iml" filepath="$PROJECT_DIR$/delayeffect/delayeffect.iml" />
-      <module fileurl="file://$PROJECT_DIR$/hostsample/hostsample.iml" filepath="$PROJECT_DIR$/hostsample/hostsample.iml" />
     </modules>
   </component>
 </project>

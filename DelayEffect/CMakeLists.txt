@@ -11,7 +11,6 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 include_directories(src/main/jni)
-include_directories(../audioroute/src/main/jni)
 
 add_library( # Sets the name of the library.
              delayEffect
@@ -22,20 +21,12 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              src/main/jni/jni_bridge.cpp
                            )
-# Set the path to the Oboe directory.
-set (OBOE_DIR ../externals/oboe)
-
-# Add the Oboe library as a subdirectory in your project.
-add_subdirectory (${OBOE_DIR} ./oboe)
-
-# Specify the path to the Oboe header files.
-include_directories (${OBOE_DIR}/include)
 
 
 add_library( audiomodule SHARED IMPORTED)
 string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LCASE)
 
-set_target_properties( audiomodule PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../audioroute/build/intermediates/cmake/${CMAKE_BUILD_TYPE_LCASE}/obj/${ANDROID_ABI}/libaudiomodule.so )
+set_target_properties( audiomodule PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../audioroute/lib/${ANDROID_ABI}/libaudiomodule.so )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -66,6 +57,5 @@ target_link_libraries( # Specifies the target library.
                        android
                        atomic
                        log
-                       oboe
                        audiomodule
                        )

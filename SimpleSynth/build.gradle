@@ -9,11 +9,23 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
     }
-
+    signingConfigs {
+        config {
+            //keyAlias 'androiddebugkey'
+            //keyPassword 'android'
+            //storeFile file('../codesigning/ntrack_debug_key.keystore')
+            //storePassword 'android'
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            ndk {
+                //abiFilters "armeabi-v7a"
+            }
         }
     }
     externalNativeBuild {
@@ -24,6 +36,6 @@ android {
 }
 
 dependencies {
-    implementation project(':audioroute')
+    implementation 'com.ntrack.audioroute:audioroute:0.9.0'
     implementation 'com.android.support:support-v4:18.0.0'
 }

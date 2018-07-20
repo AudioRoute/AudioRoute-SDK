@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.webjars.npm:global:4.3.2@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.webjars.npm/global/4.3.2/a148982e3fb1d0c40df67a723bbfd679ac6cf340/global-4.3.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.webjars.npm/global/4.3.2/b04f3ee8f5e43fa3b162981b50bb72fe1acabb33/global-4.3.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

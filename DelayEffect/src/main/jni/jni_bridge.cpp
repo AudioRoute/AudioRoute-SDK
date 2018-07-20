@@ -15,11 +15,10 @@
  */
 
 #include <jni.h>
-#include <oboe/Oboe.h>
-#include <audio_module.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "../../oboe/src/common/OboeDebug.h"
+#include "../../../../audioroute/include/audio_module.h"
+
 #define LOGI(...) \
   __android_log_print(ANDROID_LOG_INFO, "audioroute", __VA_ARGS__)
 #define LOGW(...) \
@@ -121,7 +120,7 @@ static void init_func(void *context, int sample_rate, int framesPerBuffer, int i
 
 // Tell Audioroute what your initialization and process callbacks are
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_ntrack_audioroute_simpleeffect_EffectModule_configureNativeComponents
+Java_com_audioroute_delay_EffectModule_configureNativeComponents
         (JNIEnv *env, jobject obj, jlong handle, jint channels) {
     DelayProcessor *data = new DelayProcessor();//(delay_instance *)malloc(sizeof(delay_instance));
     if (data) {
@@ -131,7 +130,7 @@ Java_com_ntrack_audioroute_simpleeffect_EffectModule_configureNativeComponents
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_ntrack_audioroute_simpleeffect_EffectModule_setParameter
+Java_com_audioroute_delay_EffectModule_setParameter
         (JNIEnv *env, jobject obj, jlong p, jfloat feedback, jfloat time) {
     DelayProcessor *data = (DelayProcessor *) p;
 
@@ -141,7 +140,7 @@ Java_com_ntrack_audioroute_simpleeffect_EffectModule_setParameter
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_ntrack_audioroute_simpleeffect_SimpleEffectModule_release__J
+Java_com_audioroute_delay_SimpleEffectModule_release__J
         (JNIEnv *env, jobject obj, jlong p) {
     DelayProcessor *data = (DelayProcessor *) p;
     free(data);

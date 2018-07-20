@@ -16,15 +16,14 @@
 
 #include "simplesynth.h"
 
-#include "audio_module.h"
+#include "../../../../audioroute/include/audio_module.h"
 
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <android/log.h>
-#include <internal/audio_module_internal.h>
 #include <math.h>
-#include <audio_module.h>
+
 #define LOGI(...) \
   __android_log_print(ANDROID_LOG_INFO, "audioroute", __VA_ARGS__)
 #define LOGW(...) \
