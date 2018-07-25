@@ -15,13 +15,13 @@
  */
 
 #include "simplesynth.h"
-
 #include "../../../../audioroute/include/audio_module.h"
 
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <android/log.h>
+
 #include <math.h>
 
 #define LOGI(...) \
@@ -29,6 +29,7 @@
 #define LOGW(...) \
   __android_log_print(ANDROID_LOG_WARN, "audioroute", __VA_ARGS__)
 #include <jni.h>
+#include <unistd.h>
 
 #define SIMPLESINTH_NATIVE extern "C" JNIEXPORT
 
@@ -126,6 +127,8 @@ struct simplesynth_instance{
     }
 };
 
+static int pause_processing=0;
+
 const int MaxInstances = 24;
 typedef struct {
     simplesynth_instance instance[MaxInstances];
@@ -134,7 +137,7 @@ typedef struct {
 static void init_func(void *context, int sample_rate, int framesPerBuffer, int input_channels, int output_channels, int instance_index)
 {
     CookNoteFrequencies();
-    LOGI("simplesynth initializing processing: channels: %d framesperbuffer: %d sampling freq: %d", input_channels, framesPerBuffer, sample_rate);
+    LOGI("simplesynth initializing processing instance %d: channels: %d framesperbuffer: %d sampling freq: %d", instance_index, input_channels, framesPerBuffer, sample_rate);
     simplesynth_instance &data = ((simplesynth_data *) context)->instance[instance_index];
     if(data.samplerate!=sample_rate)
     {
@@ -154,6 +157,7 @@ static void process_func(void *context, int sample_rate, int framesPerBuffer,
     int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index) {
     simplesynth_instance &data = ((simplesynth_data *) context)->instance[instance_index];
     int currentEvent=0;
+    while(pause_processing) sleep(1);
     for(int i=0; i<framesPerBuffer; ++i) {
         for(; currentEvent<eventsNum; ++currentEvent)
         {
@@ -187,9 +191,10 @@ SIMPLESINTH_NATIVE jlong JNICALL
 Java_com_ntrack_audioroute_simplesynth_SimpleSynthModule_configureNativeComponents
 (JNIEnv *env, jobject obj, jlong handle, jint channels) {
   simplesynth_data *data = (simplesynth_data *)malloc(sizeof(simplesynth_data));
+    memset(data, 0, sizeof(*data));
   if (data) {
-      audioroute_configure((void *) handle, process_func, init_func, data);
-    } else {
+      audioroute_configure_java(env, obj, process_func, init_func, data);
+  } else {
       free(data);
       data = NULL;
     }
@@ -215,15 +220,22 @@ simplesynth_data *data = (simplesynth_data *) p;
 
 SIMPLESINTH_NATIVE void JNICALL
 Java_com_ntrack_audioroute_simplesynth_SimpleSynthModule_setParameter
-(JNIEnv *env, jobject obj, jlong p, jlong instanceIndex, jdouble val) {
+(JNIEnv *env, jobject obj, jlong p, jlong instanceIndex, jint param, jdouble val) {
 simplesynth_data *data = (simplesynth_data *) p;
-  __sync_bool_compare_and_swap(&data->instance[instanceIndex].waveform, data->instance[instanceIndex].waveform, (int) (RANGE * val));
+    if(param==0) {
+        __sync_bool_compare_and_swap(&data->instance[instanceIndex].waveform,
+                                     data->instance[instanceIndex].waveform, (int) (RANGE * val));
+    }
+    else {
+        __sync_bool_compare_and_swap(&pause_processing,
+                                     pause_processing, (int)val);
+    }
 }
 
 
 SIMPLESINTH_NATIVE jdouble JNICALL
 Java_com_ntrack_audioroute_simplesynth_SimpleSynthModule_getParameter
-        (JNIEnv *env, jobject obj, jlong p, jlong instanceIndex) {
+        (JNIEnv *env, jobject obj, jlong p, jint param, jlong instanceIndex) {
     simplesynth_data *data = (simplesynth_data *) p;
     return data->instance[instanceIndex].waveform/RANGE;
 }

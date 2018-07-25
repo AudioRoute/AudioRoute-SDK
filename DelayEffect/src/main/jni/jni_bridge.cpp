@@ -15,8 +15,11 @@
  */
 
 #include <jni.h>
+
 #include <stddef.h>
 #include <stdlib.h>
+#include <pthread.h>
+#include <string>
 #include "../../../../audioroute/include/audio_module.h"
 
 #define LOGI(...) \
@@ -30,7 +33,7 @@ class DelayProcessor
 public:
 
     float *delayBuffer;
-    int delayBufferLength;
+    int delayBufferLength=10;
     int delayReadPosition;
     int delayWritePosition;
 
@@ -39,8 +42,6 @@ public:
     float feedback=0.5;
     float delayLength=0.5;
     double mSampleRate=44100;
-
-    float mGain=0.5;
 
     void init (double sampleRate, int samplesPerBlock, int input_channels)
     {
@@ -118,16 +119,6 @@ static void init_func(void *context, int sample_rate, int framesPerBuffer, int i
     delay->init(sample_rate, framesPerBuffer, input_channels);
 }
 
-// Tell Audioroute what your initialization and process callbacks are
-extern "C" JNIEXPORT jlong JNICALL
-Java_com_audioroute_delay_EffectModule_configureNativeComponents
-        (JNIEnv *env, jobject obj, jlong handle, jint channels) {
-    DelayProcessor *data = new DelayProcessor();//(delay_instance *)malloc(sizeof(delay_instance));
-    if (data) {
-        audioroute_configure((void *) handle, process_func, init_func, data);
-    }
-    return (jlong) data;
-}
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_audioroute_delay_EffectModule_setParameter
@@ -144,4 +135,16 @@ Java_com_audioroute_delay_SimpleEffectModule_release__J
         (JNIEnv *env, jobject obj, jlong p) {
     DelayProcessor *data = (DelayProcessor *) p;
     free(data);
+}
+
+// Tell Audioroute what your initialization and process callbacks are
+extern "C" JNIEXPORT jlong JNICALL
+Java_com_audioroute_delay_EffectModule_configureNativeComponents
+        (JNIEnv *env, jobject obj, jlong handle, jint channels) {
+    DelayProcessor *data = new DelayProcessor();
+
+    if (data) {
+        audioroute_configure_java(env, obj, process_func, init_func, data);
+     }
+    return (jlong) data;
 }

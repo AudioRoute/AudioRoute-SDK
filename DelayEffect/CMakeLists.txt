@@ -20,13 +20,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/jni/jni_bridge.cpp
-                           )
-
-
-add_library( audiomodule SHARED IMPORTED)
-string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LCASE)
-
-set_target_properties( audiomodule PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../audioroute/lib/${ANDROID_ABI}/libaudiomodule.so )
+             )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -57,5 +51,4 @@ target_link_libraries( # Specifies the target library.
                        android
                        atomic
                        log
-                       audiomodule
                        )

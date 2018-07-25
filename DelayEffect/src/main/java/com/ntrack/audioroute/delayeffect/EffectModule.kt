@@ -1,5 +1,6 @@
 package com.audioroute.delay
 
+import android.util.Log
 import com.ntrack.audioroute.AudioModule
 
 
@@ -33,9 +34,8 @@ class EffectModule : AudioModule() {
     }
 
     fun setParameter(feedback: Float, time: Float) {
-        if (ptr == 0L) {
-            throw IllegalStateException("Module is not configured.")
-        }
+        Log.d("Audioroute effect", "Module is not configured.");
+        return;
 
         setParameter(ptr, feedback, time)
     }

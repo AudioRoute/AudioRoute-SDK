@@ -20,3 +20,4 @@ delayeffect/.DS_Store
 .idea/caches
 local.properties
 settings.gradle
+codesigning/ntrack_debug_key.keystore

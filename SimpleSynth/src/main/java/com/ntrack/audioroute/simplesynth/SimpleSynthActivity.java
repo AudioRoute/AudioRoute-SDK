@@ -23,6 +23,8 @@ import android.os.Looper;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -58,7 +60,16 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
     Button button = (Button) findViewById(R.id.connectButton);
     Button hostButton = findViewById(R.id.hostButton);
     hostButton.setOnClickListener(this);
-    updateUI(true, isAudiorouteConnected);
+    Button cb = (Button) findViewById(R.id.simulate_hang);
+    cb.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        ((SimpleSynthModule)controller.getModule()).setSimulateHang();
+      }
+    });
+
+
+            updateUI(true, isAudiorouteConnected);
   }
 
   void updateUI(boolean setProgress, boolean isAudioRouteHosted)

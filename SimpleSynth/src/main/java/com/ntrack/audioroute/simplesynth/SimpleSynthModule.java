@@ -15,6 +15,7 @@
 package com.ntrack.audioroute.simplesynth;
 
 import android.app.Notification;
+import android.util.Log;
 
 import com.ntrack.audioroute.AudioModule;
 
@@ -52,7 +53,8 @@ public class SimpleSynthModule extends AudioModule {
   {
     super.createNewInstanceIndex();
     if (ptr == 0) {
-      throw new IllegalStateException("Module has not been configured.");
+      Log.d("AudiorouteSimpleSynth", "Module has not been configured.");
+      return;
     }
     configureNativeInstance(handle, ptr, instanceIndex);
   }
@@ -80,16 +82,30 @@ public class SimpleSynthModule extends AudioModule {
    * 
    * @param q cutoff frequency as a fraction of the sample rate.
    */
+  public void setSimulateHang()
+  {
+    if (ptr == 0) return;
+    setParameter(ptr, getCurrentInstanceId(), 1, 1);
+    try {
+      Thread.sleep(2000);
+    }
+    catch(InterruptedException e)
+    {
+
+    }
+    setParameter(ptr, getCurrentInstanceId(), 1, 0);
+  }
   public void setWaveform(int mode) {
     if (ptr == 0) return;
-    setParameter(ptr, getCurrentInstanceId(), mode);
+    setParameter(ptr, getCurrentInstanceId(), 0, mode);
   }
   public int getWaveform()
   {
       if (ptr == 0) {
-          throw new IllegalStateException("Module is not configured.");
+        return 0;
+        //throw new IllegalStateException("Module is not configured.");
       }
-      return (int)getParameter(ptr, getCurrentInstanceId());
+      return (int)getParameter(ptr, 0, getCurrentInstanceId());
   }
 
   private native long configureNativeComponents(long handle, int channels);
@@ -98,6 +114,6 @@ public class SimpleSynthModule extends AudioModule {
 
   private native void release(long ptr);
 
-  private native void setParameter(long ptr, long instance_index, double alpha);
-    private native double getParameter(long ptr, long instance_index);
+  private native void setParameter(long ptr, long instance_index, int parameter, double alpha);
+    private native double getParameter(long ptr, int parameter, long instance_index);
 }

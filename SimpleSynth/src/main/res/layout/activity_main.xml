@@ -48,4 +48,13 @@
         android:text=""
         android:visibility="invisible" />
 
+    <Button
+        android:id="@+id/simulate_hang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:text="Simulate process hung"
+        />
+
 </RelativeLayout>

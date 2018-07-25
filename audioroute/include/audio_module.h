@@ -25,6 +25,7 @@
 #ifndef __AUDIO_MODULE_H__
 #define __AUDIO_MODULE_H__
 #ifdef __cplusplus
+
 extern "C" {
 #endif
 
@@ -83,5 +84,16 @@ void audioroute_configure(void *handle, audio_module_process_t process, initiali
 
 #ifdef __cplusplus
 }
+
+#include <jni.h>
+__inline void audioroute_configure_java(JNIEnv *env, jobject obj, audio_module_process_t process, initialize_processing_t initialize_processing, void *context)
+{
+    jmethodID audiorouteConfigure = env->GetMethodID(env->GetObjectClass(obj), "audiorouteConfigure", "(JJJ)V");
+    env->CallVoidMethod(obj, audiorouteConfigure, (jlong)process, (jlong)initialize_processing, (jlong)context);
+}
+
 #endif
+
+
+
 #endif
