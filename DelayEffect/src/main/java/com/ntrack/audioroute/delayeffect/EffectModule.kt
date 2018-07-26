@@ -34,8 +34,10 @@ class EffectModule : AudioModule() {
     }
 
     fun setParameter(feedback: Float, time: Float) {
-        Log.d("Audioroute effect", "Module is not configured.");
-        return;
+        if (ptr == 0L) {
+            Log.d("Audioroute effect", "Module is not configured.")
+            return
+        }
 
         setParameter(ptr, feedback, time)
     }
