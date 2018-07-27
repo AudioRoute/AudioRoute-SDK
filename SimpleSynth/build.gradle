@@ -41,6 +41,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.ntrack.audioroute:audioroute:0.9.2'
+    implementation 'com.ntrack.audioroute:audioroute:0.9.3'
     implementation 'com.android.support:appcompat-v7:26.1.0'
 }
