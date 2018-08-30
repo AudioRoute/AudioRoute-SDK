@@ -1,5 +1,6 @@
 package com.audioroute.delay
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,6 +17,8 @@ import com.ntrack.audioroute.AudioModule
 import com.ntrack.audioroute.AudiorouteActivityController
 
 class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
+
+    val MY_PREFS_NAME = "MyPrefsFile"
 
     private lateinit var controller: AudiorouteActivityController
     var isAudioRouteConnected: Boolean = false
@@ -60,6 +63,8 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
         val delayFeedback = findViewById(R.id.feedbackBar) as SeekBar
         delayFeedback.setOnSeekBarChangeListener(this)
         delayFeedback.progress = 50
+
+        isAudioRouteConnected=controller.isConnected()
     }
 
     override fun onResume() {
@@ -108,4 +113,5 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     override fun onStopTrackingTouch(p0: SeekBar?) {
     }
+
 }

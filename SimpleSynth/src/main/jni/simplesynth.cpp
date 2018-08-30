@@ -58,8 +58,14 @@ class voice
     long long phase;
     int on;
     float amplitude;
+    float targetAmplitude;
     int note;
     int waveform;
+    int nextNote;
+    int samplingFrequency;
+#define DECAY 0.995
+#define DECAY_REPLACE_VOICE 0.95
+#define AMPLITUDE_SILENCE 0.000000005
 public:
     void reset()
     {
@@ -69,12 +75,24 @@ public:
     }
     void turn_off()
     {
-        reset();
+        on=3;
+        //reset();
     }
-    void turn_on(float amplitude){
+    void turn_on(int note, int samplingfrequency, int waveform, float amplitude){
+        if(on!=0) {
+            if(on==99) return;
+            on=99;
+            nextNote=note;
+            this->waveform=waveform;
+            targetAmplitude=amplitude;
+            samplingFrequency=samplingfrequency;
+            return;
+        }
+        init(note, samplingfrequency, waveform);
         on=1;
         phase=0;
-        this->amplitude=amplitude;
+        this->targetAmplitude=amplitude;
+        this->amplitude=0;
     }
     int currentNote()
     {
@@ -85,29 +103,48 @@ public:
         reset();
     }
 #define PHI 3.1415926535897932384626433832795
+private:
     void init(int note, int samplingfrequency, int waveform)
     {
+        reset();
         this->waveform=waveform;
         frequency=notesfrequencies[note];
         float discFreq=frequency/(2*samplingfrequency);
         period=1/discFreq;
         if(waveform==0) period/=2*PHI;
-        reset();
         this->note=note;
     }
-    float process(float sample)
+public:
+    float process()
     {
-        if(!on) return 0;
-        if(0==waveform) { // Pute tone
-            sample += amplitude * sin(((float) phase++) / period);
-        } else { // Saw tooth
-            sample += amplitude * (((float) ((phase++)%((int)period))) / period);
+        if(on==0) return 0;
+        else if(on==99) {
+            amplitude = amplitude * DECAY_REPLACE_VOICE;
+            if (amplitude < AMPLITUDE_SILENCE) {
+                on=0;
+                turn_on(nextNote, samplingFrequency, waveform, targetAmplitude);
+            }
+        } else if(on==3) {
+            amplitude = amplitude * DECAY;
+            if(amplitude<AMPLITUDE_SILENCE) {
+                reset();
+                return 0;
+            }
+        } else if(on==1) {
+            amplitude += 0.00001;
+            if((targetAmplitude-amplitude)<0.00005) {
+                on=2;
+            }
         }
-        return sample;
+        if(0==waveform) { // Pure tone
+            return amplitude * sin(((float) phase++) / period);
+        } else { // Saw tooth
+            return amplitude * (((float) ((phase++)%((int)period))) / period);
+        }
     }
     int is_on()
     {
-        return on;
+        return on==2||on==1;
     }
 };
 #define NumVoices 10
@@ -134,27 +171,27 @@ typedef struct {
     simplesynth_instance instance[MaxInstances];
 } simplesynth_data;
 
-static void init_func(void *context, int sample_rate, int framesPerBuffer, int input_channels, int output_channels, int instance_index)
+static void init_func(void *context, int sample_rate, int framesPerBuffer, int instance_index, int connectedInputBuses[MaxNumBuses], int connectedOutputBuses[MaxNumBuses])
 {
     CookNoteFrequencies();
-    LOGI("simplesynth initializing processing instance %d: channels: %d framesperbuffer: %d sampling freq: %d", instance_index, input_channels, framesPerBuffer, sample_rate);
+    LOGI("simplesynth initializing processing instance %d: channels: %d framesperbuffer: %d sampling freq: %d", instance_index, connectedOutputBuses[0], framesPerBuffer, sample_rate);
     simplesynth_instance &data = ((simplesynth_data *) context)->instance[instance_index];
     if(data.samplerate!=sample_rate)
     {
         data.samplerate=sample_rate;
         for(int i=0; i<NumVoices; ++i)
-            data.voices[i].init(i, data.samplerate, data.waveform);
+            data.voices[i].reset();
     }
 }
 
 float linToGain(float linval)
 {
-    return powf(10.f, -1*(1-linval));
+    return powf(10.f, -1*(1-linval))*0.4f;
 }
 
 static void process_func(void *context, int sample_rate, int framesPerBuffer,
     int input_channels, const float *input_buffer,
-    int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index) {
+    int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index, AudiorouteTimeInfo *timeInfo) {
     simplesynth_instance &data = ((simplesynth_data *) context)->instance[instance_index];
     int currentEvent=0;
     while(pause_processing) sleep(1);
@@ -165,12 +202,11 @@ static void process_func(void *context, int sample_rate, int framesPerBuffer,
                 if (EventTypeNoteOn==events[currentEvent].eventType) {
                     data.lastVoice++;
                     data.lastVoice=data.lastVoice%NumVoices;
-                    data.voices[data.lastVoice].init(events[currentEvent].index, sample_rate, data.waveform);
-                    data.voices[data.lastVoice].turn_on(linToGain(events[currentEvent].value));
+                    data.voices[data.lastVoice].turn_on(events[currentEvent].index, sample_rate, data.waveform, linToGain(events[currentEvent].value));
                 }
                 else if (EventTypeNoteOff==events[currentEvent].eventType) {
                     for(int v=0; v<NumVoices; ++v) {
-                        if(data.voices[v].currentNote()==events[currentEvent].index)
+                        if(data.voices[v].is_on()&&data.voices[v].currentNote()==events[currentEvent].index)
                             data.voices[v].turn_off();
                     }
                 }
@@ -178,7 +214,7 @@ static void process_func(void *context, int sample_rate, int framesPerBuffer,
         }
         float sample=0;
         for(int voice=0; voice<NumVoices; ++voice)
-            sample+=data.voices[voice].process(sample);
+            sample+=data.voices[voice].process();
 
         for(int ch=0; ch<output_channels; ++ch)
         {

@@ -24,6 +24,11 @@
 
 #ifndef __AUDIO_MODULE_H__
 #define __AUDIO_MODULE_H__
+
+#include <stdint.h>
+
+#define MaxNumBuses 8
+
 #ifdef __cplusplus
 
 extern "C" {
@@ -31,6 +36,7 @@ extern "C" {
 
 enum EventType { EventTypeNoteOn, EventTypeNoteOff, EventTypeController, EventTypePitchBend, EventTypePolyPressure};
 
+// Structure used to pass music events (i.e. MIDI) from host to hosted app
 typedef struct {
     enum EventType eventType;
     int index; // Note or controller num
@@ -41,6 +47,17 @@ typedef struct {
     float endingValue; // may be used for note off velocity
     float detuning; // in cents
 } MusicEvent;
+
+// Structure used to pass streaming position and state
+struct AudiorouteTimeInfo
+{
+    uint64_t sampleOffset;
+    int32_t bpm; // 1000th of beats, i.e. 120 bpm = 120000
+    int32_t timeSignatureNumerator;
+    int32_t timeSignatureDenominator;
+    enum TimeInfoFlags { Play=1, Rec=2};
+    uint64_t flags; // Bitwise combination of TimeInfoFlags
+};
 
 /*
  * Processing callback; takes a processing context (which is just a pointer to
@@ -57,7 +74,7 @@ typedef struct {
 typedef void (*audio_module_process_t)
     (void *context, int sample_rate, int framesPerBuffer,
      int input_channels, const float *input_buffer,
-     int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index);
+     int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index, struct AudiorouteTimeInfo *timeInfo);
 
 /*
  * Initialize processing callback; takes a processing context (which is just a pointer to
@@ -70,7 +87,7 @@ typedef void (*audio_module_process_t)
  * during the initialization phase
  */
 
-typedef void (*initialize_processing_t)(void *context, int sample_rate, int framesPerBuffer, int input_channels, int output_channels, int instance_index);
+typedef void (*initialize_processing_t)(void *context, int sample_rate, int framesPerBuffer, int instance_index, int connectedInputBuses[MaxNumBuses], int connectedOutputBuses[MaxNumBuses]);
 
 /*
  * Configures the audio module with a native audio processing method and

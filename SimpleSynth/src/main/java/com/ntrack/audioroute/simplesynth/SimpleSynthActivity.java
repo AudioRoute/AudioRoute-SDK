@@ -14,6 +14,7 @@
 
 package com.ntrack.audioroute.simplesynth;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -35,6 +36,7 @@ import com.ntrack.audioroute.AudiorouteActivity;
 public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBarChangeListener, View.OnClickListener {
 
   private static final String TAG = "SimpleSynthSample";
+  public static final String MY_PREFS_NAME = "MyPrefsFile";
 
   private int sampleRate;
   boolean isAudiorouteConnected=false;
@@ -68,8 +70,8 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
       }
     });
 
-
-            updateUI(true, isAudiorouteConnected);
+    isAudiorouteConnected=controller.isConnected();
+    updateUI(true, isAudiorouteConnected);
   }
 
   void updateUI(boolean setProgress, boolean isAudioRouteHosted)
@@ -169,4 +171,6 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
       }
     });
   }
+
 }
+

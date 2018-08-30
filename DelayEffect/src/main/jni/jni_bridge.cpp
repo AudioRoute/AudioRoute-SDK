@@ -21,6 +21,7 @@
 #include <pthread.h>
 #include <string>
 #include "../../../../audioroute/include/audio_module.h"
+#include <android/log.h>
 
 #define LOGI(...) \
   __android_log_print(ANDROID_LOG_INFO, "audioroute", __VA_ARGS__)
@@ -105,18 +106,17 @@ public:
 // My audio callback
 static void process_func(void *context, int sample_rate, int framesPerBuffer,
                          int input_channels, const float *input_buffer,
-                         int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index) {
+                         int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index, struct AudiorouteTimeInfo *timeInfo) {
     DelayProcessor *delay = (DelayProcessor *) context;
-
     delay->process(input_buffer, output_buffer, framesPerBuffer, input_channels);
 }
 
 // Audio processing initialization (called before the actual processing starts)
-static void init_func(void *context, int sample_rate, int framesPerBuffer, int input_channels, int output_channels, int instance_index)
+static void init_func(void *context, int sample_rate, int framesPerBuffer, int instance_index, int *inputBuses, int *outputBuses)
 {
     // do your initialization stuff here, allocate resources based on sample_rate and framesPerBuffers etc.
     DelayProcessor *delay = (DelayProcessor *) context;
-    delay->init(sample_rate, framesPerBuffer, input_channels);
+    delay->init(sample_rate, framesPerBuffer, inputBuses[0]);
 }
 
 
