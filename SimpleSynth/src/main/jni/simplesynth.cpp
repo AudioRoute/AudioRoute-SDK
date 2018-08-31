@@ -15,7 +15,7 @@
  */
 
 #include "simplesynth.h"
-#include "../../../../audioroute/include/audio_module.h"
+#include "audio_module.h"
 
 #include <stddef.h>
 #include <stdlib.h>

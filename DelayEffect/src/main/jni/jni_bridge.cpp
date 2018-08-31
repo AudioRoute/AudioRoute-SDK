@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <string>
-#include "../../../../audioroute/include/audio_module.h"
+#include "audio_module.h"
 #include <android/log.h>
 
 #define LOGI(...) \

@@ -4,6 +4,8 @@
     android:versionCode="6000"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />

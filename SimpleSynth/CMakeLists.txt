@@ -11,6 +11,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 include_directories(src/main/jni)
+include_directories(../audioroute/include)
 
 add_library( # Sets the name of the library.
              simplesynth
