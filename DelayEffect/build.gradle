@@ -7,7 +7,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.audioroute:0.9.6'.delay"
+        applicationId "com.audioroute.delay"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
