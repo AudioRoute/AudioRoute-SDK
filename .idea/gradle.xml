@@ -8,8 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/DelayEffect" />
             <option value="$PROJECT_DIR$/SimpleSynth" />
-            <option value="$PROJECT_DIR$/delayeffect" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

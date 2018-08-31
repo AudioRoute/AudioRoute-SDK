@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/SimpleEffect" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/DelayEffect" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/SimpleSynth" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/audioroute" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/delayeffect" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/hostsample" vcs="svn" />
   </component>
 </project>

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AudioRouteSamples.iml" filepath="$PROJECT_DIR$/AudioRouteSamples.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimpleSynth/SimpleSynth.iml" filepath="$PROJECT_DIR$/SimpleSynth/SimpleSynth.iml" />
-      <module fileurl="file://$PROJECT_DIR$/audiorouteSamples.iml" filepath="$PROJECT_DIR$/audiorouteSamples.iml" />
-      <module fileurl="file://$PROJECT_DIR$/delayeffect/delayeffect.iml" filepath="$PROJECT_DIR$/delayeffect/delayeffect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DelayEffect/delayeffect.iml" filepath="$PROJECT_DIR$/DelayEffect/delayeffect.iml" />
     </modules>
   </component>
 </project>
