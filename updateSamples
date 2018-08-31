@@ -1,22 +1,18 @@
-ORIGDIR=`pwd`                          # original directory (builtin)
-PROGNAME=`type $0 | awk '{print $3}'`  # search for executable on path
-PROGDIR=`dirname $PROGNAME`            # extract directory of program
-PROGNAME=`basename $PROGNAME`          # base name of program
-cd $PROGDIR                            # go to that directory
-
-export CONFIGURATION=$1
-export PRODUCT_NAME=$2
 
 
-#copy libs and audio_module.h
+#Copy libs and audio_module.h
 cp -Rf ../audioroute/audioroute/build/intermediates/cmake/release/obj/* audioroute/lib/
 cp -Rf ../audioroute/audioroute/src/main/jni/audio_module.h audioroute/include/
 
-#copy Delay
+#Copy Delay
 cp -Rf ../audioroute/delayeffect/src/* delayeffect/src/
 
-#copy Synth
+#Copy Synth
 cp -Rf ../audioroute/SimpleSynth/src/* SimpleSynth/src/
+
+#Update AudioRoute dependency version
+read -p "AudioRoute Version: " version
+sed -i '' 's/audioroute:0.9.*/audioroute:'"$version"''"'"'/g' delayeffect/build.gradle
 
 #GIT push
 #!/bin/bash
