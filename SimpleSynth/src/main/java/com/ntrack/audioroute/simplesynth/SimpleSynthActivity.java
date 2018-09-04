@@ -14,6 +14,8 @@
 
 package com.ntrack.audioroute.simplesynth;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -32,20 +34,25 @@ import android.widget.TextView;
 
 import com.ntrack.audioroute.AudioModule;
 import com.ntrack.audioroute.AudiorouteActivity;
+import com.ntrack.audioroute.AudiorouteActivityController;
 
-public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBarChangeListener, View.OnClickListener {
+public class SimpleSynthActivity extends Activity implements OnSeekBarChangeListener, View.OnClickListener {
+  static {
+    System.loadLibrary("simplesynth");
+  }
 
+  AudiorouteActivityController controller;
   private static final String TAG = "SimpleSynthSample";
   public static final String MY_PREFS_NAME = "MyPrefsFile";
 
   private int sampleRate;
   boolean isAudiorouteConnected=false;
 
-  @Override protected String getModuleLabel()
+  protected String getModuleLabel()
   {
     return "simplesynth";
   }
-  @Override public Bitmap getModuleImage()
+  public Bitmap getModuleImage()
   {
     Drawable d = getResources().getDrawable(com.ntrack.audioroute.simplesynth.R.drawable.app_icon);
     Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
@@ -54,6 +61,43 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    controller= AudiorouteActivityController.getInstance();
+    controller.setModuleLabel(getModuleLabel());
+    controller.setModuleImage(getModuleImage());
+    final SimpleSynthActivity mythis=this;
+    controller.setListener(new AudiorouteActivityController.Listener() {
+      @Override
+      public void onRouteConnected() {
+        isAudiorouteConnected=true;
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+          @Override
+          public void run() {
+            stopAudio();
+            updateUI(true, isAudiorouteConnected);
+          }
+        });
+      }
+
+      @Override
+      public void onRouteDisconnected() {
+        isAudiorouteConnected = false;
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+          @Override
+          public void run() {
+            showHostIcon(isAudiorouteConnected);
+            //checkStartAudio();
+          }
+        });
+      }
+
+      @Override
+      public AudioModule createAudioModule() {
+        return new SimpleSynthModule(2, mythis);
+      }
+    });
+   controller.onActivityCreated(this, false);
+
     setContentView(R.layout.activity_main);
     TextView textView = (TextView) findViewById(R.id.mainText);
     SeekBar waveformBar = (SeekBar) findViewById(R.id.waveformBar);
@@ -72,17 +116,32 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
 
     isAudiorouteConnected=controller.isConnected();
     updateUI(true, isAudiorouteConnected);
+
+    ((Piano)findViewById(R.id.piano)).setPianoKeyListener(new Piano.PianoKeyListener() {
+      @Override
+      public void keyPressed(int id, int action) {
+        sendMidiNote(id+64, (action==Key.ACTION_KEY_DOWN) ? 1 : 0);
+      }
+    });
+  }
+  public void checkStartAudio()
+  {
+    if(isResumed) startAudio();
   }
 
+  int getCurrentInstanceId()
+  {
+    if(controller!=null&&controller.getModule()!=null&&controller.getModule().isConfigured()) {
+      return controller.getModule().getCurrentInstanceId();
+    }
+    return 0;
+  }
   void updateUI(boolean setProgress, boolean isAudioRouteHosted)
   {
     TextView textView = (TextView) findViewById(R.id.instance_label);
-    int instance=0;
+    int instance=getCurrentInstanceId();
     int mode=0;
-    if(controller!=null&&controller.getModule()!=null&&controller.getModule().isConfigured()) {
-      instance = controller.getModule().getCurrentInstanceId();
-      mode=((com.ntrack.audioroute.simplesynth.SimpleSynthModule)controller.getModule()).getWaveform();
-    }
+    mode=getWaveform(instance);
     if(textView!=null) {
         textView.setText("Instance: "+Integer.toString(instance));
     }
@@ -103,6 +162,12 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
 
     if(isAudioRouteHosted && controller!=null)
       hostButton.setBackground(controller.getHostIcon());
+
+    // Hide the keyboard when connected to Audioroute
+    // If you want to keep showing the keyboard you'll need to route the events to your
+    // callback. This sample is designed to routes MIDI events only its own audio callback
+    // Not to the Audioroute process callback
+    findViewById(R.id.piano).setVisibility(isAudioRouteHosted ? View.INVISIBLE : View.VISIBLE);
   }
 
   @Override
@@ -111,13 +176,35 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
       controller.switchToHostApp();
   }
 
+  native void startAudio();
+  native void stopAudio();
+  native void sendMidiNote(int note, int isNoteOn);
+  native void setWaveform(int instanceId, int mode);
+  native int getWaveform(int instanceId);
+  @Override
+  protected void onPause() {
+    super.onPause();
+    isResumed=false;
+
+    stopAudio();
+  }
+  boolean isResumed=false;
   @Override
   protected void onResume() {
     super.onResume();
 
-    updateUI(true, isAudiorouteConnected);
-  }
+    isResumed=true;
+    controller.onResume();
 
+    updateUI(true, isAudiorouteConnected);
+
+    if(!controller.isConnected()&&!controller.isConnecting()) startAudio();
+  }
+  @Override protected void onNewIntent (Intent intent)
+  {
+    super.onNewIntent(intent);
+    controller.onNewIntent(intent);
+  }
   @Override
   protected void onDestroy() {
     super.onDestroy();
@@ -132,13 +219,12 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
 
   @Override
   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-    if (controller.getModule() != null) {
+    int instanceId=getCurrentInstanceId();
       int mode=0;
       if(progress<50) mode=0;
       else mode=1;
-      ((SimpleSynthModule)controller.getModule()).setWaveform(mode);
+      setWaveform(instanceId, mode);
       updateUI(false, isAudiorouteConnected);
-    }
   }
 
   @Override
@@ -146,31 +232,5 @@ public class SimpleSynthActivity extends AudiorouteActivity implements OnSeekBar
 
   @Override
   public void onStopTrackingTouch(SeekBar seekBar) {}
-
-  @Override
-  protected void onAudiorouteConnected() {
-    this.isAudiorouteConnected=true;
-    new Handler(Looper.getMainLooper()).post(new Runnable() {
-      @Override
-      public void run() {
-        updateUI(true, isAudiorouteConnected);
-      }
-    });
-  }
-  @Override protected AudioModule createModule()
-  {
-    return new SimpleSynthModule(2);
-  }
-  @Override
-  protected void onAudiorouteDisconnected() {
-    this.isAudiorouteConnected = false;
-    new Handler(Looper.getMainLooper()).post(new Runnable() {
-      @Override
-      public void run() {
-        showHostIcon(isAudiorouteConnected);
-      }
-    });
-  }
-
 }
 

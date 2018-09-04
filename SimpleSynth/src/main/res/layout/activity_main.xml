@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/mainText"
-        android:layout_centerVertical="true"/>
+        android:layout_above="@+id/simulate_hang"/>
 
     <TextView
         android:id="@+id/mainText"
@@ -52,9 +52,18 @@
         android:id="@+id/simulate_hang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:text="Simulate process hung"
+        android:layout_above="@+id/piano"
+        />
+
+    <com.ntrack.audioroute.simplesynth.Piano
+        android:layout_width="match_parent"
+        android:id="@+id/piano"
+        android:layout_height="194dp"
+        android:layout_marginTop="0dp"
+        android:translationZ="30dp"
+        android:layout_alignParentBottom="true"
         />
 
 </RelativeLayout>

@@ -26,15 +26,12 @@ import com.ntrack.audioroute.AudioModule;
  * update parameters in a lock-free yet thread-safe manner.
  */
 public class SimpleSynthModule extends AudioModule {
-
-  static {
-    System.loadLibrary("simplesynth");
-  }
-
   private long ptr = 0;
   private final int channels;
 
-  public SimpleSynthModule(int channels) {
+  SimpleSynthActivity theActivity;
+  public SimpleSynthModule(int channels, SimpleSynthActivity theActivity) {
+    this.theActivity=theActivity;
     if (channels < 1) {
       throw new IllegalArgumentException("Channel count must be at least one.");
     }
@@ -61,6 +58,7 @@ public class SimpleSynthModule extends AudioModule {
 
   @Override
   protected void release() {
+    theActivity.checkStartAudio();
     if (ptr != 0) {
       release(ptr);
       ptr = 0;

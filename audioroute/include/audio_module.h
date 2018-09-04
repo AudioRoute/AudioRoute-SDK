@@ -48,6 +48,81 @@ typedef struct {
     float detuning; // in cents
 } MusicEvent;
 
+#define AROUTE_MIN(a,b) (((a)<(b))?(a):(b))
+#define AROUTE_MAX(a,b) (((a)>(b))?(a):(b))
+
+// Convert MusicEvent to Raw 4 bytes MIDI event
+// Note that the conversion may loose precision for note velocities, controller values etc.
+inline int32_t ConvertMusicEventToRawMIDI(MusicEvent *event)
+{
+    int32_t ev=0;
+    float val=AROUTE_MAX(0.0f, AROUTE_MIN(event->value, 1.0f));
+    switch(event->eventType) {
+        case EventTypeNoteOn:
+            return ((int32_t)0x90)|(AROUTE_MIN(event->channel, 16))|(((int32_t) (val*127))<<16)|(((int32_t)event->index)<<8);
+        case EventTypeNoteOff:
+            return 0x80|(AROUTE_MIN(event->channel, 16))|/*(((int32_t) (val*127))<<16)|*/(((int32_t)event->index)<<8);
+        case EventTypeController:
+            return 0xB0|(AROUTE_MIN(event->channel, 16))|(((int32_t) (val*127))<<16)|(((int32_t)event->index)<<8);
+        case EventTypePitchBend:
+        {
+            int32_t valn=val * 16384;
+            int32_t lsb=valn&0x7F;
+            int32_t msb=valn>7;
+            return 0xE0 | (AROUTE_MIN(event->channel, 16)) | (msb << 16) | (lsb << 8);
+        }
+        case EventTypePolyPressure:
+            return 0xA0|(AROUTE_MIN(event->channel, 16))|(((int32_t) (val*127))<<16)|(((int32_t)event->index)<<8);
+    }
+    return ev;
+}
+
+inline int GetMusicEventFromRawMIDI(int32_t midi, MusicEvent *m)
+{
+    m->index=0;
+    m->value=0;
+    m->deltaFrames=0;
+    m->noteLengthFrames=0;
+    m->endingValue=0;
+    m->detuning=0;
+    m->channel=midi&0xf;
+
+    switch(midi&0xf0) {
+        case 0x90:
+            m->eventType=EventTypeNoteOn;
+            m->index=(midi&0xff00)>>8;
+            m->value=((float)((midi&0xff0000)>>16))/127.0f;
+            return 1;
+        case 0x80:
+            m->eventType=EventTypeNoteOff;
+            m->index=(midi&0xff00)>>8;
+            return 1;
+        case 0xB0:
+            m->eventType=EventTypeController;
+            m->index=(midi&0xff00)>>8;
+            m->value=((float)((midi&0xff0000)>>16))/127.0f;
+            return 1;
+        case 0xE0:
+        {
+            m->eventType=EventTypePitchBend;
+            int32_t lsb=midi&0xff00;
+            lsb>>8;
+            int32_t msb=midi&0xff0000;
+            msb=msb>>16;
+            msb=msb<<7;
+            int32_t val=msb|lsb;
+            m->value=val/16384.0;
+            return 1;
+        }
+        case 0xA0:
+            m->eventType=EventTypePolyPressure;
+            m->index=(midi&0xff00)>>8;
+            m->value=((float)((midi&0xff0000)>>16))/127.0f;
+            return 1;
+    }
+    return 0;
+}
+
 // Structure used to pass streaming position and state
 struct AudiorouteTimeInfo
 {
