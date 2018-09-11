@@ -92,6 +92,8 @@ inline int GetMusicEventFromRawMIDI(int32_t midi, MusicEvent *m)
             m->eventType=EventTypeNoteOn;
             m->index=(midi&0xff00)>>8;
             m->value=((float)((midi&0xff0000)>>16))/127.0f;
+            if(m->value==0)
+                m->eventType=EventTypeNoteOff; // Note off disguised as note on
             return 1;
         case 0x80:
             m->eventType=EventTypeNoteOff;
