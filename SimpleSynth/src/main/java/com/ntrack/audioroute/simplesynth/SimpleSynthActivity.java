@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2018 n-Track Software All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -69,23 +69,23 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
     controller.setListener(new AudiorouteActivityController.Listener() {
       @Override
       public void onRouteConnected() {
-        isAudiorouteConnected=true;
+        //isAudiorouteConnected=true;
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override
           public void run() {
             stopAudio();
-            updateUI(true, isAudiorouteConnected);
+            updateUI(true);
           }
         });
       }
 
       @Override
       public void onRouteDisconnected() {
-        isAudiorouteConnected = false;
+        //isAudiorouteConnected = false;
         new Handler(Looper.getMainLooper()).post(new Runnable() {
           @Override
           public void run() {
-            showHostIcon(isAudiorouteConnected);
+            showHostIcon(false);
             //checkStartAudio();
           }
         });
@@ -114,8 +114,8 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
       }
     });
 
-    isAudiorouteConnected=controller.isConnected();
-    updateUI(true, isAudiorouteConnected);
+    //isAudiorouteConnected=controller.isConnected();
+    updateUI(true);
 
     ((Piano)findViewById(R.id.piano)).setPianoKeyListener(new Piano.PianoKeyListener() {
       @Override
@@ -136,8 +136,9 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
     }
     return 0;
   }
-  void updateUI(boolean setProgress, boolean isAudioRouteHosted)
+  void updateUI(boolean setProgress)
   {
+    boolean isAudioRouteHosted=controller.isConnected();
     TextView textView = (TextView) findViewById(R.id.instance_label);
     int instance=getCurrentInstanceId();
     int mode=0;
@@ -196,7 +197,7 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
     isResumed=true;
     controller.onResume();
 
-    updateUI(true, isAudiorouteConnected);
+    updateUI(true);
 
     if(!controller.isConnected()&&!controller.isConnecting()) startAudio();
   }
@@ -224,7 +225,7 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
       if(progress<50) mode=0;
       else mode=1;
       setWaveform(instanceId, mode);
-      updateUI(false, isAudiorouteConnected);
+      updateUI(false);
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Google Inc. All Rights Reserved.
+ * Copyright 2018 n-Track Software All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy
@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <android/log.h>
+
+#include "audio_module.h"
 
 static int pause_processing=0;
 
@@ -42,7 +44,7 @@ static void process_func(void *context, int sample_rate, int framesPerBuffer,
     int input_channels, const float *input_buffer,
     int output_channels, float *output_buffer, MusicEvent *events, int eventsNum, int instance_index, AudiorouteTimeInfo *timeInfo) {
     simplesynth_instance &data = ((simplesynth_data *) context)->instance[instance_index];
-    while(pause_processing) sleep(1);
+    while(pause_processing) sleep(7);
     data.process(output_buffer, output_channels>1? (output_buffer+framesPerBuffer) : NULL, framesPerBuffer, 1, sample_rate, events, eventsNum);
 }
 
