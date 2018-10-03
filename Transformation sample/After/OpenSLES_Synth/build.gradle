@@ -1,22 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "28.0.0"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
-        applicationId "com.ntrack.audioroute.simplesynth"
+        applicationId "com.ntrack.audioroute.demo_opensl_synth"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 28
     }
     signingConfigs {
         config {
-            /*
             keyAlias 'androiddebugkey'
             keyPassword 'android'
             storeFile file('../codesigning/ntrack_debug_key.keystore')
             storePassword 'android'
-            */
         }
     }
     buildTypes {
@@ -33,6 +31,7 @@ android {
     lintOptions {
         abortOnError false
     }
+
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
@@ -41,6 +40,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.ntrack.audioroute:audioroute:0.9.9'
     implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.ntrack.audioroute:audioroute:0.9.9'
 }

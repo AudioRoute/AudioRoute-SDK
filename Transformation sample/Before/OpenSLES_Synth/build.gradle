@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "com.ntrack.audioroute.demo_opensl_synth"
+        minSdkVersion 16
+        targetSdkVersion 28
+    }
+    signingConfigs {
+        config {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('../../../codesigning/ntrack_debug_key.keystore')
+            storePassword 'android'
+        }
+    }
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            ndk {
+                //abiFilters "armeabi-v7a"
+            }
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+}
