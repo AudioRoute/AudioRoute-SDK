@@ -75,6 +75,7 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
           public void run() {
             stopAudio();
             updateUI(true);
+            showHostIcon(true);
           }
         });
       }
