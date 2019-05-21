@@ -7,7 +7,6 @@ LowpassSample/.DS_Store
 SimpleSynth/src/main/java/com/ntrack/audioroute/.DS_Store
 SimpleSynth/src/.DS_Store
 hostsamplekotlin/.DS_Store
-patchfield/.DS_Store
 .idea/workspace.xml
 externals/.DS_Store
 .DS_Store
@@ -18,6 +17,9 @@ delayeffect/.DS_Store
 delayeffect/.DS_Store
 *.iml
 .idea/caches
-local.properties
-settings.gradle
-codesigning/ntrack_debug_key.keystore
+.idea/modules.xml
+audioroute/include/*
+audioroute/lib/*
+mapping.zip
+audioroute/build.zip
+*/.cxx/*

@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+//apply from: 'maven-push.gradle'
+
+android {
+    signingConfigs {
+        release {
+            storeFile file('../../private/codesigning/ntrack_debug_key.keystore')
+            storePassword 'android'
+            keyPassword 'android'
+            keyAlias = 'androiddebugkey'
+        }
+    }
+    compileSdkVersion 26
+
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 26
+
+        ndk {
+            moduleName "audiomodule"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles 'proguard-rules.txt'
+            //getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+        debug {
+            minifyEnabled false
+            jniDebuggable = true
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:support-v4:26.0.0'
+}

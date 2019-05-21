@@ -1,2 +1,4 @@
+include ':audioroute'
+include ':hostsample'
 include ':delayeffect'
 include ':SimpleSynth'

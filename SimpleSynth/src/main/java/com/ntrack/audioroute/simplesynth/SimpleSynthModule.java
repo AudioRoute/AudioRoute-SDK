@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 n-Track Software All Rights Reserved.
+ * Copyright 2019 n-Track S.r.l. All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -20,11 +20,9 @@ import android.util.Log;
 import com.ntrack.audioroute.AudioModule;
 
 /**
- * A sample audio module that implements a simple discretization of an RC lowpass filter. The native
- * components are in Audioroute/jni/samples/lowpass.c. They illustrate a number of crucial points.
- * In particular, they show how to use the rendering context of the processing callback, and how to
- * update parameters in a lock-free yet thread-safe manner.
+ * A simple audioroute compatible synth
  */
+
 public class SimpleSynthModule extends AudioModule {
   private long ptr = 0;
   private final int channels;

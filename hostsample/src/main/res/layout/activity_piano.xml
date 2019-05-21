@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:piano="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    tools:context=".PianoActivity">
+
+
+    <com.example.hostsample.Piano
+        android:id="@+id/piano"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/background_dark"
+        piano:blackKeyDrawable="@drawable/key_black"
+        piano:whiteKeyDrawable="@drawable/key_white" />
+
+</LinearLayout>

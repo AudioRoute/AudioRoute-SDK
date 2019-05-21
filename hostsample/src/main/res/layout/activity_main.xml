@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/inputButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/mic"
+        android:onClick="inputClicked"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toTopOf="@+id/effectButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/effectButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/plus_circle"
+        android:onClick="effectClicked"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toTopOf="@+id/outputButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputButton" />
+
+    <Button
+        android:id="@+id/outputButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/speakers"
+        android:onClick="outputClicked"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/effectButton" />
+
+    <Button
+        android:id="@+id/openInputBtn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/holo_blue_bright"
+        android:onClick="closeModule"
+        android:text="DISCONNECT ALL"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/pianoBtn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="INPUT"
+        android:textColor="#828283"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputButton" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="EFFECT"
+        android:textColor="#828283"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/effectButton" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="OUTPUT"
+        android:textColor="#828283"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/outputButton" />
+
+    <Button
+        android:id="@+id/pianoBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/piano"
+        android:text=""
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/ejectOutput"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/eject"
+        android:onClick="disconnectOutput"
+        android:text=""
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/inputButton"
+        app:layout_constraintTop_toTopOf="@+id/outputButton" />
+
+    <Button
+        android:id="@+id/ejectEffect2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/eject"
+        android:onClick="disconnectEffect"
+        android:text=""
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/inputButton"
+        app:layout_constraintTop_toTopOf="@+id/effectButton" />
+
+    <Button
+        android:id="@+id/ejectInput2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/eject"
+        android:onClick="disconnectInput"
+        android:text=""
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/inputButton"
+        app:layout_constraintTop_toTopOf="@+id/inputButton" />
+
+    <com.audioroute.hostsample.Piano
+        android:id="@+id/piano"
+        android:layout_width="wrap_content"
+        android:layout_height="194dp"
+        android:layout_marginTop="0dp"
+        android:translationZ="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

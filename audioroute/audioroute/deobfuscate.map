@@ -1,0 +1,372 @@
+# compiler: R8
+# compiler_version: 1.5.20-dev
+# compiler_hash: a85ccd499f6d149322870a8aedddc92152071a01
+# pg_map_id: b6b77d0
+com.ntrack.audioroute.AudioModule -> com.ntrack.audioroute.AudioModule:
+    int lastInstanceIndex -> f
+    java.lang.String name -> a
+    int token -> b
+    int moduleIndex -> c
+    boolean configured -> d
+    com.ntrack.audioroute.AudioModule$IModuleDisconnectListener listener -> e
+    1:160:void <clinit>():30:189 -> <clinit>
+    1:1:void <init>():57:57 -> <init>
+    2:66:void <init>():35:99 -> <init>
+    1:1:void audiorouteConfigure(long,long,long):255:255 -> audiorouteConfigure
+    1:60:int configure(java.lang.String,int,com.ntrack.audioroute.AudioModule$IModuleDisconnectListener):112:171 -> configure
+    61:61:int configure(java.lang.String,int,com.ntrack.audioroute.AudioModule$IModuleDisconnectListener):118:118 -> configure
+    1:1:void createNewInstanceIndex():192:192 -> createNewInstanceIndex
+    1:2:int getCurrentFramesPerBuffer():282:283 -> getCurrentFramesPerBuffer
+    1:1:int getCurrentInstanceId():93:93 -> getCurrentInstanceId
+    1:2:int getCurrentSampleRate():277:278 -> getCurrentSampleRate
+    1:1:int getModuleIndex():89:89 -> getModuleIndex
+    1:1:java.lang.String getName():200:200 -> getName
+    1:1:boolean hasTimedOut():215:215 -> hasTimedOut
+    1:1:boolean isConfigured():102:102 -> isConfigured
+    1:3:void onConnectionShutdown():176:178 -> onConnectionShutdown
+    1:1:void setCurrentInstanceId(int):97:97 -> setCurrentInstanceId
+    1:4:void stopAndRelease():246:249 -> stopAndRelease
+com.ntrack.audioroute.AudioModuleForegroundService -> com.ntrack.audioroute.AudioModuleForegroundService:
+    android.graphics.Bitmap productBitmap -> c
+    com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener controller -> e
+    java.lang.String productName -> b
+    java.lang.Class mainActivityClass -> d
+    java.util.ArrayList listeners -> a
+    1:29:void <init>():35:63 -> <init>
+    1:1:void addListener(com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener):174:174 -> addListener
+    1:1:void onCreate():50:50 -> onCreate
+    1:9:void onDestroy():156:164 -> onDestroy
+    1:56:int onStartCommand(android.content.Intent,int,int):94:149 -> onStartCommand
+    1:1:void startService(android.app.Activity,com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener,android.graphics.Bitmap):76:76 -> startService
+    2:2:void setActivityClass(java.lang.Class):72:72 -> startService
+    2:2:void startService(android.app.Activity,com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener,android.graphics.Bitmap):76 -> startService
+    3:3:void startService(android.app.Activity,com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener,android.graphics.Bitmap):77:77 -> startService
+    4:6:void setProductName(com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener,java.lang.String,android.graphics.Bitmap):66:68 -> startService
+    4:6:void startService(android.app.Activity,com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener,android.graphics.Bitmap):77 -> startService
+    7:9:void startService(android.app.Activity,com.ntrack.audioroute.AudioModuleForegroundService$OnServiceStartedListener,android.graphics.Bitmap):78:80 -> startService
+    1:1:void stopService(android.app.Activity):84:84 -> stopService
+    2:2:void setActivityClass(java.lang.Class):72:72 -> stopService
+    2:2:void stopService(android.app.Activity):84 -> stopService
+    3:6:void stopService(android.app.Activity):85:88 -> stopService
+com.ntrack.audioroute.AudioRouteHostController -> com.ntrack.audioroute.AudioRouteHostController:
+    java.util.Map audiorouteHostInstances -> d
+    com.ntrack.audioroute.AudioRouteHostController$OnModuleCreatedListener onModuleCreatedListener -> f
+    android.app.Activity activity -> h
+    boolean showForegroundServiceNotification -> e
+    android.graphics.Bitmap myModuleIcon -> g
+    java.lang.String moduleName -> a
+    long audioRouteNativeRef -> c
+    boolean isExistingApp -> b
+    1:1:void <clinit>():69:69 -> <clinit>
+    1:25:void <init>():66:90 -> <init>
+    void disconnect() -> a
+    1:1:boolean isModuleConnected(long):160:160 -> a
+    2:39:void instantiateAudiorouteModuleInternal(android.app.Activity,java.lang.String,android.graphics.Bitmap,com.ntrack.audioroute.AudioRouteHostController$OnModuleCreatedListener,int,long):163:200 -> a
+    40:104:void launchApp(boolean,int):218:282 -> a
+    105:105:java.util.List getInstalledPackages(android.content.Context):320:320 -> a
+    105:105:boolean scanJson(java.lang.String,android.content.Context,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener):453 -> a
+    106:152:boolean scanJson(java.lang.String,android.content.Context,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener):454:500 -> a
+    153:153:boolean scanJson(java.lang.String,android.content.Context,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener):497:497 -> a
+    154:154:java.lang.String getAudiorouteScanFile(android.content.Context):324:324 -> a
+    155:162:void saveJson(android.content.Context,java.lang.String):388:395 -> a
+    163:164:int getLastIntentId(android.app.Activity):528:529 -> a
+    165:168:void setLastIntentId(android.app.Activity,int):534:537 -> a
+    169:172:void addIntentUniqueId(android.app.Activity,android.content.Intent):541:544 -> a
+    1:2:java.lang.String getCachedScanJson(android.content.Context):377:378 -> b
+    1:7:boolean isScanJsonCached(android.content.Context):328:334 -> c
+    1:1:long getNativeEngineReference():300:300 -> getNativeEngineReference
+    1:1:android.graphics.drawable.Drawable getPackageIcon(java.lang.String):559:559 -> getPackageIcon
+    1:11:java.util.Map getScanParams(android.content.Context):513:523 -> getScanParams
+    1:1:void instantiateAudiorouteModule(android.app.Activity,java.lang.String,com.ntrack.audioroute.AudioRouteHostController$OnModuleCreatedListener):156:156 -> instantiateAudiorouteModule
+    1:18:void onNewIntent(android.content.Intent):124:141 -> onNewIntent
+    1:16:java.lang.String readFile(java.lang.String,java.nio.charset.Charset):356:371 -> readFile
+    1:10:void releaseModuleInstance(com.ntrack.audioroute.AudioRouteHostController$ModuleRuntimeInfo):97:106 -> releaseModuleInstance
+    1:1:void resuscitateApp(android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$OnModuleCreatedListener,com.ntrack.audioroute.AudioRouteHostController$ModuleRuntimeInfo):153:153 -> resuscitateApp
+    1:32:boolean scanInstalledModules(android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener,boolean):400:431 -> scanInstalledModules
+    33:33:com.ntrack.audioroute.UrlTask com.ntrack.audioroute.UrlTask.setListener(com.ntrack.audioroute.UrlTask$UrlTaskListener):56:56 -> scanInstalledModules
+    33:33:boolean scanInstalledModules(android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener,boolean):431 -> scanInstalledModules
+    34:34:boolean scanInstalledModules(android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener,boolean):448:448 -> scanInstalledModules
+    35:35:com.ntrack.audioroute.UrlTask com.ntrack.audioroute.UrlTask.setParams(java.util.Map):61:61 -> scanInstalledModules
+    35:35:boolean scanInstalledModules(android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener,boolean):448 -> scanInstalledModules
+    36:36:boolean scanInstalledModules(android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener,boolean):448:448 -> scanInstalledModules
+    1:1:void setHostNotificationIcon(android.graphics.Bitmap):148:148 -> setHostNotificationIcon
+    1:1:void setShowForegroundServiceNotification(boolean):93:93 -> setShowForegroundServiceNotification
+    1:7:void showUserInterface(android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$ModuleRuntimeInfo):548:554 -> showUserInterface
+com.ntrack.audioroute.AudioRouteHostController$1 -> com.ntrack.audioroute.AudioRouteHostController$1:
+    com.ntrack.audioroute.AudioRouteHostController this$0 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudioRouteHostController):187:187 -> <init>
+    1:1:void onDisconnect():195:195 -> onDisconnect
+com.ntrack.audioroute.AudioRouteHostController$2 -> com.ntrack.audioroute.AudioRouteHostController$2:
+    int val$instanceIdWhenResuscitating -> a
+    com.ntrack.audioroute.AudioRouteHostController this$0 -> b
+    1:1:void <init>(com.ntrack.audioroute.AudioRouteHostController,int):200:200 -> <init>
+    1:1:void onDisconnect():208:208 -> onDisconnect
+    1:1:void serviceStarted():203:203 -> serviceStarted
+com.ntrack.audioroute.AudioRouteHostController$3 -> com.ntrack.audioroute.AudioRouteHostController$3:
+    android.util.Pair val$pair -> a
+    1:1:void <init>(com.ntrack.audioroute.AudioRouteHostController,android.util.Pair):239:239 -> <init>
+    1:26:void handleMessage(android.os.Message):243:268 -> handleMessage
+com.ntrack.audioroute.AudioRouteHostController$4 -> com.ntrack.audioroute.AudioRouteHostController$4:
+    com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener val$listener -> b
+    com.ntrack.audioroute.AudioRouteHostController this$0 -> c
+    android.app.Activity val$context -> a
+    1:1:void <init>(com.ntrack.audioroute.AudioRouteHostController,android.app.Activity,com.ntrack.audioroute.AudioRouteHostController$ScanModulesListener):431:431 -> <init>
+    1:6:void onResponse(java.lang.String):435:440 -> onResponse
+com.ntrack.audioroute.AudioRouteHostController$AudiorouteEngineInfo -> com.ntrack.audioroute.AudioRouteHostController$a:
+    java.lang.Long instanceRef -> a
+    int engineData -> b
+    1:3:void <init>(com.ntrack.audioroute.AudioRouteHostController,java.lang.Long,int):83:85 -> <init>
+com.ntrack.audioroute.AudioRouteHostController$ModuleInfo -> com.ntrack.audioroute.AudioRouteHostController$ModuleInfo:
+    1:1:void <init>(com.ntrack.audioroute.AudioRouteHostController):306:306 -> <init>
+com.ntrack.audioroute.AudioRouteHostController$ModuleRuntimeInfo -> com.ntrack.audioroute.AudioRouteHostController$ModuleRuntimeInfo:
+    1:1:void <init>():109:109 -> <init>
+com.ntrack.audioroute.Audioroute -> com.ntrack.audioroute.Audioroute:
+    1:3:long getAudiorouteInstance(android.content.Context,int,int):37:39 -> a
+    4:4:void release(long,int):45:45 -> a
+com.ntrack.audioroute.AudiorouteActivity -> com.ntrack.audioroute.AudiorouteActivity:
+    1:1:void <init>():32:32 -> <init>
+    1:21:void onCreate(android.os.Bundle):40:60 -> onCreate
+    1:1:void onDestroy():88:88 -> onDestroy
+    1:2:void onNewIntent(android.content.Intent):70:71 -> onNewIntent
+    1:2:void onResume():65:66 -> onResume
+com.ntrack.audioroute.AudiorouteActivity$1 -> com.ntrack.audioroute.AudiorouteActivity$1:
+    com.ntrack.audioroute.AudiorouteActivity this$0 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudiorouteActivity):44:44 -> <init>
+    1:1:com.ntrack.audioroute.AudioModule createAudioModule():57:57 -> createAudioModule
+    1:1:void onRouteConnected():47:47 -> onRouteConnected
+    1:1:void onRouteDisconnected():52:52 -> onRouteDisconnected
+com.ntrack.audioroute.AudiorouteActivityController -> com.ntrack.audioroute.AudiorouteActivityController:
+    com.ntrack.audioroute.AudiorouteActivityController instance -> r
+    boolean forcedDisconnect -> m
+    int forceInstanceIdOnResuscitate -> n
+    int engineData -> o
+    java.lang.String gobacktoapp -> i
+    int onResumeConnect -> l
+    java.lang.String hostPackageName -> h
+    com.ntrack.audioroute.AudioModule module -> c
+    boolean requestingNewInstance -> j
+    boolean isFirstInstance -> k
+    int lastIntentId -> g
+    android.graphics.Bitmap moduleIcon -> e
+    boolean showForegroundServiceNotification -> q
+    com.ntrack.audioroute.AudiorouteActivityController$Listener listener -> a
+    boolean connected -> f
+    android.os.Messenger messenger -> p
+    android.app.Activity activityParent -> b
+    java.lang.String moduleLabel -> d
+    1:1:void <clinit>():43:43 -> <clinit>
+    1:1:void <init>():83:83 -> <init>
+    2:340:void <init>():81:419 -> <init>
+    1:1:void access$000(com.ntrack.audioroute.AudiorouteActivityController,boolean):41:41 -> a
+    2:2:boolean checkIntentShouldConnect(android.content.Intent):123:123 -> a
+    3:4:void AcquireHostPackageName():227:228 -> a
+    5:12:void doSwitchToHostApp(boolean):260:267 -> a
+    13:17:android.graphics.drawable.Drawable getPackageIcon(android.app.Activity,java.lang.String):284:288 -> a
+    18:41:void doNewIntent(android.content.Intent,boolean):327:350 -> a
+    1:2:boolean intentIsAlreadyUsed(android.content.Intent):128:129 -> b
+    3:4:void CheckGoBackToApp():233:234 -> b
+    1:1:void createMyModule():160:160 -> c
+    2:16:void processExtraIntentParams(android.content.Intent,boolean):363:377 -> c
+    1:18:void connect(android.app.Activity):380:397 -> connect
+    19:31:void connect(android.app.Activity):382:394 -> connect
+    1:22:void doConnectModule():202:223 -> d
+    1:4:void disconnect():414:417 -> disconnect
+    1:19:void exchangeEngineDataAndConnect():178:196 -> e
+    1:1:int getCurrentFramesPerBuffer():431:431 -> getCurrentFramesPerBuffer
+    1:2:int getCurrentSampleRate():426:427 -> getCurrentSampleRate
+    1:2:android.graphics.drawable.Drawable getHostIcon():276:277 -> getHostIcon
+    1:3:com.ntrack.audioroute.AudiorouteActivityController getInstance():71:73 -> getInstance
+    1:1:com.ntrack.audioroute.AudioModule getModule():95:95 -> getModule
+    1:1:boolean isConnected():114:114 -> isConnected
+    1:1:boolean isConnecting():119:119 -> isConnecting
+    1:12:boolean onActivityCreated(android.app.Activity,boolean):135:146 -> onActivityCreated
+    1:11:void onConnected():164:174 -> onConnected
+    1:1:void onNewIntent(android.content.Intent):356:356 -> onNewIntent
+    1:9:boolean onResume():295:303 -> onResume
+    1:1:void setActivity(android.app.Activity):87:87 -> setActivity
+    1:1:void setConnectModule(boolean):109:109 -> setConnectModule
+    1:1:void setListener(com.ntrack.audioroute.AudiorouteActivityController$Listener):78:78 -> setListener
+    1:1:void setModuleImage(android.graphics.Bitmap):104:104 -> setModuleImage
+    1:1:void setModuleLabel(java.lang.String):99:99 -> setModuleLabel
+    1:1:void setShowForegroundServiceNotification(boolean):422:422 -> setShowForegroundServiceNotification
+    1:9:void showMismatchProtocol(android.content.Context):315:323 -> showMismatchProtocol
+    1:1:void switchToHostApp():272:272 -> switchToHostApp
+com.ntrack.audioroute.AudiorouteActivityController$1 -> com.ntrack.audioroute.AudiorouteActivityController$1:
+    com.ntrack.audioroute.AudiorouteActivityController this$0 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudiorouteActivityController):181:181 -> <init>
+    1:6:void handleMessage(android.os.Message):185:190 -> handleMessage
+com.ntrack.audioroute.AudiorouteActivityController$2 -> com.ntrack.audioroute.AudiorouteActivityController$2:
+    com.ntrack.audioroute.AudiorouteActivityController this$0 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudiorouteActivityController):202:202 -> <init>
+    1:13:void onConnectionShutDown():205:217 -> onConnectionShutDown
+com.ntrack.audioroute.AudiorouteActivityController$2$1 -> com.ntrack.audioroute.AudiorouteActivityController$2$1:
+    com.ntrack.audioroute.AudiorouteActivityController$2 this$1 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudiorouteActivityController$2):208:208 -> <init>
+    1:1:void run():211:211 -> run
+com.ntrack.audioroute.AudiorouteActivityController$3 -> com.ntrack.audioroute.AudiorouteActivityController$3:
+    com.ntrack.audioroute.AudiorouteActivityController this$0 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudiorouteActivityController):234:234 -> <init>
+    1:12:void run():239:250 -> run
+com.ntrack.audioroute.AudiorouteActivityController$4 -> com.ntrack.audioroute.AudiorouteActivityController$4:
+    1:1:void <init>():318:318 -> <init>
+    1:1:void onClick(android.content.DialogInterface,int):321:321 -> onClick
+com.ntrack.audioroute.AudiorouteActivityController$5 -> com.ntrack.audioroute.AudiorouteActivityController$5:
+    com.ntrack.audioroute.AudiorouteActivityController this$0 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudiorouteActivityController):383:383 -> <init>
+    1:1:void onDisconnect():390:390 -> onDisconnect
+com.ntrack.audioroute.AudiorouteActivityController$6 -> com.ntrack.audioroute.AudiorouteActivityController$6:
+    com.ntrack.audioroute.AudiorouteActivityController this$0 -> a
+    1:1:void <init>(com.ntrack.audioroute.AudiorouteActivityController):397:397 -> <init>
+    1:1:void onDisconnect():404:404 -> onDisconnect
+    1:1:void serviceStarted():400:400 -> serviceStarted
+com.ntrack.audioroute.AudiorouteException -> com.ntrack.audioroute.AudiorouteException:
+    int code -> a
+    1:2:void <init>(int):45:46 -> <init>
+    1:1:int getCode():50:50 -> getCode
+    1:1:int throwOnError(int):59:59 -> throwOnError
+com.ntrack.audioroute.BuildConfig -> com.ntrack.audioroute.BuildConfig:
+    1:1:void <init>():6:6 -> <init>
+com.ntrack.audioroute.IAudiorouteClient$Stub -> com.ntrack.audioroute.IAudiorouteClient$Stub:
+    1:2:void <init>():18:19 -> <init>
+    1:5:com.ntrack.audioroute.IAudiorouteClient asInterface(android.os.IBinder):30:34 -> asInterface
+    1:1:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):143:143 -> onTransact
+    2:3:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):137:138 -> onTransact
+    4:5:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):131:132 -> onTransact
+    6:15:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):117:126 -> onTransact
+    16:25:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):103:112 -> onTransact
+    26:29:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):95:98 -> onTransact
+    30:41:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):79:90 -> onTransact
+    42:45:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):71:74 -> onTransact
+    46:60:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):52:66 -> onTransact
+    61:61:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):47:47 -> onTransact
+com.ntrack.audioroute.IAudiorouteClient$Stub$Proxy -> com.ntrack.audioroute.IAudiorouteClient$Stub$a:
+    android.os.IBinder mRemote -> a
+    1:2:void <init>(android.os.IBinder):151:152 -> <init>
+    1:1:android.os.IBinder asBinder():156:156 -> asBinder
+    1:13:void onModuleActivated(java.lang.String,int,int,int[],int[]):197:209 -> onModuleActivated
+    1:18:void onModuleCreated(java.lang.String,int,int,android.app.Notification):164:181 -> onModuleCreated
+    1:9:void onModuleDeactivated(java.lang.String):213:221 -> onModuleDeactivated
+    1:9:void onModuleDeleted(java.lang.String):185:193 -> onModuleDeleted
+    1:12:void onPortsConnected(java.lang.String,int,java.lang.String,int):225:236 -> onPortsConnected
+    1:12:void onPortsDisconnected(java.lang.String,int,java.lang.String,int):240:251 -> onPortsDisconnected
+    1:8:void onStart():255:262 -> onStart
+    1:8:void onStop():266:273 -> onStop
+com.ntrack.audioroute.IAudiorouteService$Stub -> com.ntrack.audioroute.IAudiorouteService$Stub:
+    1:2:void <init>():16:17 -> <init>
+    1:5:com.ntrack.audioroute.IAudiorouteService asInterface(android.os.IBinder):28:32 -> asInterface
+    1:1:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):302:302 -> onTransact
+    2:5:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):294:297 -> onTransact
+    6:9:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):286:289 -> onTransact
+    10:15:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):276:281 -> onTransact
+    16:32:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):255:271 -> onTransact
+    33:42:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):241:250 -> onTransact
+    43:46:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):233:236 -> onTransact
+    47:50:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):225:228 -> onTransact
+    51:58:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):213:220 -> onTransact
+    59:70:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):197:208 -> onTransact
+    71:76:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):187:192 -> onTransact
+    77:87:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):171:181 -> onTransact
+    88:93:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):161:166 -> onTransact
+    94:99:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):151:156 -> onTransact
+    100:103:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):143:146 -> onTransact
+    104:107:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):135:138 -> onTransact
+    108:119:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):119:130 -> onTransact
+    120:131:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):103:114 -> onTransact
+    132:137:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):93:98 -> onTransact
+    138:143:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):83:88 -> onTransact
+    144:146:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):76:78 -> onTransact
+    147:150:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):68:71 -> onTransact
+    151:155:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):59:63 -> onTransact
+    156:160:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):50:54 -> onTransact
+    161:161:boolean onTransact(int,android.os.Parcel,android.os.Parcel,int):45:45 -> onTransact
+com.ntrack.audioroute.IAudiorouteService$Stub$Proxy -> com.ntrack.audioroute.IAudiorouteService$Stub$a:
+    android.os.IBinder mRemote -> a
+    1:2:void <init>(android.os.IBinder):310:311 -> <init>
+    1:13:int activateModule(java.lang.String):395:407 -> activateModule
+    14:16:int activateModule(java.lang.String):406:408 -> activateModule
+    1:1:android.os.IBinder asBinder():315:315 -> asBinder
+    1:16:int connectPorts(java.lang.String,int,java.lang.String,int):431:446 -> connectPorts
+    17:19:int connectPorts(java.lang.String,int,java.lang.String,int):445:447 -> connectPorts
+    1:22:int createModule(java.lang.String,int,int,android.app.Notification):706:727 -> createModule
+    23:25:int createModule(java.lang.String,int,int,android.app.Notification):726:728 -> createModule
+    1:13:int deactivateModule(java.lang.String):413:425 -> deactivateModule
+    14:16:int deactivateModule(java.lang.String):424:426 -> deactivateModule
+    1:13:int deleteModule(java.lang.String):733:745 -> deleteModule
+    14:16:int deleteModule(java.lang.String):744:746 -> deleteModule
+    1:16:int disconnectPorts(java.lang.String,int,java.lang.String,int):452:467 -> disconnectPorts
+    17:19:int disconnectPorts(java.lang.String,int,java.lang.String,int):466:468 -> disconnectPorts
+    1:12:int getBufferSize():663:674 -> getBufferSize
+    13:15:int getBufferSize():673:675 -> getBufferSize
+    1:13:int getInputChannels(java.lang.String):513:525 -> getInputChannels
+    14:16:int getInputChannels(java.lang.String):524:526 -> getInputChannels
+    1:12:java.util.List getModules():496:507 -> getModules
+    13:15:java.util.List getModules():506:508 -> getModules
+    1:18:android.app.Notification getNotification(java.lang.String):554:571 -> getNotification
+    19:21:android.app.Notification getNotification(java.lang.String):570:572 -> getNotification
+    1:13:int getOutputChannels(java.lang.String):531:543 -> getOutputChannels
+    14:16:int getOutputChannels(java.lang.String):542:544 -> getOutputChannels
+    1:12:int getProtocolVersion():751:762 -> getProtocolVersion
+    13:15:int getProtocolVersion():761:763 -> getProtocolVersion
+    1:12:int getSampleRate():646:657 -> getSampleRate
+    13:15:int getSampleRate():656:658 -> getSampleRate
+    1:13:boolean isActive(java.lang.String):580:592 -> isActive
+    14:16:boolean isActive(java.lang.String):591:593 -> isActive
+    1:16:boolean isConnected(java.lang.String,int,java.lang.String,int):601:616 -> isConnected
+    17:19:boolean isConnected(java.lang.String,int,java.lang.String,int):615:617 -> isConnected
+    1:14:boolean isDependent(java.lang.String,java.lang.String):627:640 -> isDependent
+    15:17:boolean isDependent(java.lang.String,java.lang.String):639:641 -> isDependent
+    1:12:boolean isRunning():476:487 -> isRunning
+    13:15:boolean isRunning():486:488 -> isRunning
+    1:11:void registerClient(com.ntrack.audioroute.IAudiorouteClient):328:338 -> registerClient
+    12:14:void registerClient(com.ntrack.audioroute.IAudiorouteClient):337:339 -> registerClient
+    1:12:int sendSharedMemoryFileDescriptor():768:779 -> sendSharedMemoryFileDescriptor
+    13:15:int sendSharedMemoryFileDescriptor():778:780 -> sendSharedMemoryFileDescriptor
+    1:17:void setMasterNotification(android.app.Notification):685:701 -> setMasterNotification
+    18:20:void setMasterNotification(android.app.Notification):700:702 -> setMasterNotification
+    1:12:int start():361:372 -> start
+    13:15:int start():371:373 -> start
+    1:10:void stop():381:390 -> stop
+    11:13:void stop():389:391 -> stop
+    1:11:void unregisterClient(com.ntrack.audioroute.IAudiorouteClient):346:356 -> unregisterClient
+    12:14:void unregisterClient(com.ntrack.audioroute.IAudiorouteClient):355:357 -> unregisterClient
+com.ntrack.audioroute.UrlTask -> com.ntrack.audioroute.UrlTask:
+    java.util.Map params -> b
+    com.ntrack.audioroute.UrlTask$UrlTaskListener listener -> a
+    1:1:void <init>():39:39 -> <init>
+    1:19:java.lang.String getPostDataString():66:84 -> a
+    1:1:java.lang.Object doInBackground(java.lang.Object[]):39:39 -> doInBackground
+    2:43:java.lang.String doInBackground(java.lang.String[]):92:133 -> doInBackground
+    2:43:java.lang.Object doInBackground(java.lang.Object[]):39 -> doInBackground
+    44:55:java.lang.String doInBackground(java.lang.String[]):122:133 -> doInBackground
+    44:55:java.lang.Object doInBackground(java.lang.Object[]):39 -> doInBackground
+    56:70:java.lang.String doInBackground(java.lang.String[]):119:133 -> doInBackground
+    56:70:java.lang.Object doInBackground(java.lang.Object[]):39 -> doInBackground
+    71:80:java.lang.String doInBackground(java.lang.String[]):126:135 -> doInBackground
+    71:80:java.lang.Object doInBackground(java.lang.Object[]):39 -> doInBackground
+    1:1:void onPostExecute(java.lang.Object):39:39 -> onPostExecute
+    2:4:void onPostExecute(java.lang.String):141:143 -> onPostExecute
+    2:4:void onPostExecute(java.lang.Object):39 -> onPostExecute
+    1:1:void onPreExecute():49:49 -> onPreExecute
+com.ntrack.audioroute.UrlTask$UrlError -> com.ntrack.audioroute.UrlTask$UrlError:
+    com.ntrack.audioroute.UrlTask$UrlError[] $VALUES -> a
+    1:1:void <clinit>():42:42 -> <clinit>
+    1:1:void <init>(java.lang.String,int):42:42 -> <init>
+    1:1:com.ntrack.audioroute.UrlTask$UrlError valueOf(java.lang.String):42:42 -> valueOf
+    1:1:com.ntrack.audioroute.UrlTask$UrlError[] values():42:42 -> values
+com.ntrack.audioroute.internal.OpenSlParams -> com.ntrack.audioroute.internal.OpenSlParams:
+    1:1:void <init>():50:50 -> <init>
+    2:2:void <init>():50:50 -> <init>
+    2:2:void <init>(com.ntrack.audioroute.internal.OpenSlParams$1):28 -> <init>
+    1:1:com.ntrack.audioroute.internal.OpenSlParams createInstance(android.content.Context):45:45 -> createInstance
+com.ntrack.audioroute.internal.OpenSlParams$DefaultOpenSlParams -> com.ntrack.audioroute.internal.OpenSlParams$a:
+    1:1:void <init>():89:89 -> <init>
+    1:1:void <init>(com.ntrack.audioroute.internal.OpenSlParams$1):89 -> <init>
+com.ntrack.audioroute.internal.OpenSlParams$JellyBeanMr1OpenSlParams -> com.ntrack.audioroute.internal.OpenSlParams$b:
+    int bufferSize -> b
+    int sampleRate -> a
+    1:14:void <init>(android.content.Context):61:74 -> <init>
+    1:14:void <init>(android.content.Context,com.ntrack.audioroute.internal.OpenSlParams$1):56 -> <init>
+    1:1:int getBufferSize():84:84 -> getBufferSize
+    1:1:int getSampleRate():79:79 -> getSampleRate
+com.ntrack.audioroute.internal.SharedMemoryUtils -> com.ntrack.audioroute.internal.SharedMemoryUtils:
+    1:1:void <init>():21:21 -> <init>

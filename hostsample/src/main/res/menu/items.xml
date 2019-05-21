@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/crash"
+        android:title="Simulate Crash"
+        android:showAsAction="ifRoom|withText"
+        />
+
+</menu>
