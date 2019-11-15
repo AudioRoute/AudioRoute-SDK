@@ -177,7 +177,7 @@ extern "C" int audioroute_process(void *engine, int index, float *bufferL, int s
     module->callbackType=CALLBACK_TYPE_PROCESS;
     float *input_buffer = audioroute_get_audio_buffer(shm_ptr, module->input_buffer);
     float *output_buffer = audioroute_get_audio_buffer(shm_ptr, module->output_buffer);
-    assert(module->buffer_frames==framesPerBuffer);
+    assert(framesPerBuffer<=module->buffer_frames);
 
     if(nChannels==1) {
         for (int i = 0; i < framesPerBuffer; ++i) {
