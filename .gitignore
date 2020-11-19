@@ -22,4 +22,4 @@ audioroute/include/*
 audioroute/lib/*
 mapping.zip
 audioroute/build.zip
-*/.cxx/*
+*.cxx
