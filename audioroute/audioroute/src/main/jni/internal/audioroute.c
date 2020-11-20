@@ -87,12 +87,16 @@ static int add_module(audioroute *pb, int input_channels, int output_channels) {
       module->output_buffer = pb->next_buffer;
       pb->next_buffer += output_channels * pb->buffer_frames;
       module->report =
-        BARRIER_OFFSET * MEM_PAGE_SIZE / sizeof(struct simple_lock_barrier_t) + i * 3; // simple_lock_barrier_t is bigger than simple_barrier_t, we're wasting some space
+              (BARRIER_OFFSET * MEM_PAGE_SIZE) / sizeof(struct simple_lock_barrier_t) + i * 3; // simple_lock_barrier_t is bigger than simple_barrier_t, we're wasting some space
       sb_clobber(audioroute_get_barrier(pb->shm_ptr, module->report));
       module->wake = module->report + 1;
       sb_clobber(audioroute_get_barrier(pb->shm_ptr, module->wake));
       module->ready = module->report + 2;
 
+#ifndef NDEBUG
+        LOGD("MEMDUMP wake %lld report %lld ready %lld", (void *)audioroute_get_barrier(pb->shm_ptr, module->report)-pb->shm_ptr, (void *)audioroute_get_barrier(pb->shm_ptr, module->wake)-pb->shm_ptr, (void *)audioroute_get_lock(pb->shm_ptr, module->ready)-pb->shm_ptr);
+        LOGD("MEMDUMP ids wake %d report %d ready %d", module->wake, module->report, module->ready);
+#endif
         module->numInputBuses=1;
         module->numOutputBuses=1;
       __sync_bool_compare_and_swap(&module->status, 0, 1);
@@ -273,6 +277,18 @@ static audioroute *create_instance(int sample_rate, int buffer_frames,
     }
     activate_module(pb, add_module(pb, 0, input_channels));
     //activate_module(pb, add_module(pb, output_channels, 0));
+#ifndef NDEBUG
+    LOGD("MEMDUMP MEM_PAGE_SIZE %d", MEM_PAGE_SIZE);
+      LOGD("MEMDUMP BARRIER_OFFSET %d", BARRIER_OFFSET);
+      LOGD("MEMDUMP BUFFER_OFFSET %d", BUFFER_OFFSET);
+      LOGD("MEMDUMP Buffer: %lld", (void*)pb->next_buffer);
+    LOGD("MEMDUMP Shared mem start %llx", pb->shm_ptr);
+    audio_module *module = audioroute_get_audio_module(pb->shm_ptr, 0);
+    LOGD("MEMDUMP Module mem start %llx", module);
+      LOGD("MEMDUMP sizeof module %d", sizeof(audio_module));
+      LOGD("MEMDUMP musicevents start %d", (int)((((void*)&module->musicEvents[0]))-(void*)module));
+      LOGD("MEMDUMP musicevents end %d", (int)((((void*)&module->musicEvents[MaxEventsPerBufferStorage-1]))-(void*)module));
+#endif
   }
   return pb;
 }

@@ -23,6 +23,7 @@
 #ifndef __AUDIO_MODULE_INTERNAL_H__
 #define __AUDIO_MODULE_INTERNAL_H__
 
+//#define FixMemAlignment
 #include "audio_module.h"
 
 #include "simple_barrier.h"
@@ -55,8 +56,12 @@ typedef struct {
     int sink_port;
 } connection;
 
-#define MaxEventsPerBuffer 100
-
+#define MaxEventsPerBufferStorage 100
+#ifdef FixMemAlignment
+#define MaxEventsPerBufferLimit MaxEventsPerBufferAlloc
+#else
+#define MaxEventsPerBufferLimit 59
+#endif
 
 typedef struct {
     int status;  // 0: none; 1: current; 2: slated for deletion
@@ -104,7 +109,7 @@ typedef struct {
     int is_hosted;
     int callbackType; // 0 for processing, 1 for initialize
     int numEvents;
-    MusicEvent musicEvents[MaxEventsPerBuffer];
+    MusicEvent musicEvents[MaxEventsPerBufferStorage];
     int instance_index;
     int isAlive;
     int host_gave_up;

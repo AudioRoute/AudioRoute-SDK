@@ -39,11 +39,19 @@ float *audioroute_get_audio_buffer(void *p, ptrdiff_t offset) {
 }
 
 simple_lock_barrier_t *audioroute_get_lock(void *p, ptrdiff_t offset) {
+#ifdef FixMemAlignment
+    return (simple_lock_barrier_t*)(((simple_lock_barrier_t *) p) + offset);
+#else
     return (simple_lock_barrier_t*)(((simple_barrier_t *) p) + offset);
+#endif
 }
 
 simple_barrier_t *audioroute_get_barrier(void *p, ptrdiff_t offset) {
-  return ((simple_barrier_t *) p) + offset;
+#ifdef FixMemAlignment
+  return (simple_barrier_t*)(((simple_lock_barrier_t *) p) + offset);
+#else
+    return ((simple_barrier_t *) p) + offset;
+#endif
 }
 
 #include <cassert>
@@ -66,6 +74,12 @@ extern "C" void setEngineParameters(void *engine, int sampleRate, int nChannels,
 
 #define AUDIOROUTE_CALLBACK_RESULT_SUCCESS 1000
 #define AUDIOROUTE_CALLBACK_RESULT_UNDEFINED -10
+
+#ifdef NDEBUG
+#define SB_LOCK_SANITY_CHECK(x, msg)
+#else
+#define SB_LOCK_SANITY_CHECK(x, msg) sb_sanity_check_log(x, msg);
+#endif
 
 extern "C" int audioroute_kill_module_runner(void *engine, int index, int instance_index)
 {
@@ -173,11 +187,14 @@ extern "C" int audioroute_process(void *engine, int index, float *bufferL, int s
     void *shm_ptr=getShmFromEngine(engine);
     audio_module *module = audioroute_get_audio_module(shm_ptr, index);
     if(NULL==module) return -2;
+
+    SB_LOCK_SANITY_CHECK(audioroute_get_lock(shm_ptr, module->ready), "process start");
+
     module->is_hosted=1;
     module->callbackType=CALLBACK_TYPE_PROCESS;
     float *input_buffer = audioroute_get_audio_buffer(shm_ptr, module->input_buffer);
     float *output_buffer = audioroute_get_audio_buffer(shm_ptr, module->output_buffer);
-    assert(framesPerBuffer<=module->buffer_frames);
+    //assert(framesPerBuffer<=module->buffer_frames);
 
     if(nChannels==1) {
         for (int i = 0; i < framesPerBuffer; ++i) {
@@ -196,12 +213,17 @@ extern "C" int audioroute_process(void *engine, int index, float *bufferL, int s
   module->sample_rate=sampleRate;
     module->instance_index=instance_index;
 
+    LOGD("Eventsnum: %d", eventsNum);
+    //eventsNum=0;
+    if(eventsNum>MaxEventsPerBufferLimit) eventsNum=MaxEventsPerBufferLimit;
     for(int i=0; i<eventsNum; ++i)
     {
         module->musicEvents[i]=events[i];
     }
     module->numEvents=eventsNum;
     module->timeInfo=*timeInfo;
+
+    SB_LOCK_SANITY_CHECK(audioroute_get_lock(shm_ptr, module->ready), "process events copied");
 
   struct timespec deadline;
     /*clock_gettime(CLOCK_MONOTONIC, &deadline);
@@ -224,13 +246,14 @@ extern "C" int audioroute_process(void *engine, int index, float *bufferL, int s
 #endif
 
     sb_wake(audioroute_get_barrier(shm_ptr, module->wake));
+        SB_LOCK_SANITY_CHECK(audioroute_get_lock(shm_ptr, module->ready), "process woken");
     int ret=sb_wait_and_reset_lock(audioroute_get_lock(shm_ptr, module->ready), &deadline);
     module->is_hosted=0;
     if(0!=ret)
     {
       // Wait timed out
       //assert(false);
-        LOGD("Audioroute process timeout");
+        LOGD("Audioroute process timeout (%d)", ret);
         module->isAlive=0;
         module->host_gave_up=1;
         sb_wake(audioroute_get_barrier(shm_ptr, module->wake));
@@ -252,6 +275,7 @@ extern "C" int audioroute_process(void *engine, int index, float *bufferL, int s
       module->isAlive=0;
       return 1;
   }*/
+  SB_LOCK_SANITY_CHECK(audioroute_get_lock(shm_ptr, module->ready), "process end");
   return 0;
 }
 
@@ -275,18 +299,20 @@ static void signal_handler(int sig, siginfo_t *info, void *context) {
 }
 
 static void *run_module(void *arg) {
-  LOGI("Entering run_module.");
   audio_module_runner *amr = (audio_module_runner *) arg;
   sb_wake(&amr->launched);
   audio_module *module = audioroute_get_audio_module(amr->shm_ptr, amr->index);
 
-  timer_t timer;
+    const int threadid=gettid();
+    timer_t timer;
   struct sigevent evp;
   evp.sigev_notify = SIGEV_THREAD_ID;
   evp.sigev_signo = AM_SIG_ALRM;
   evp.sigev_value.sival_ptr = module;
-  evp.sigev_notify_thread_id = gettid();
+  evp.sigev_notify_thread_id = threadid;
   timer_create(CLOCK_MONOTONIC, &evp, &timer);
+
+  LOGI("Entering run_module tid %d", threadid);
 
   struct itimerspec timeout;
   timeout.it_interval.tv_sec = 0;
@@ -312,6 +338,10 @@ static void *run_module(void *arg) {
     amr->exited=false;
     module->host_gave_up=0;
 
+    sb_init_lock(audioroute_get_lock(amr->shm_ptr, module->ready), threadid);
+    //sb_init_lock(audioroute_get_lock(amr->shm_ptr, module->wake), threadid);
+    //sb_init_lock(audioroute_get_lock(amr->shm_ptr, module->report), threadid);
+
     sb_clobber_lock(audioroute_get_lock(amr->shm_ptr, module->ready)); // Take ownership of lock
 
   //if (!sigsetjmp(sig_env, 1)) {
@@ -328,6 +358,8 @@ static void *run_module(void *arg) {
           audioroute_collect_input(amr->shm_ptr, amr->index);*/
       //timer_settime(timer, 0, &timeout, NULL);  // Arm timer.
 
+      LOGW("Callback: %d", module->callbackType);
+      _ASSERT(amr->context);
         switch(module->callbackType) {
             case CALLBACK_TYPE_KEEPALIVE:
                 // NOP
@@ -349,6 +381,7 @@ static void *run_module(void *arg) {
                     amr->initialize_processing(amr->context, module->sample_rate,
                                                module->buffer_frames, module->instance_index,
                                                connectedInputBuses, connectedOutputBuses);
+                    _ASSERT(amr->context);
                 }
                 break;
             default:
@@ -358,6 +391,7 @@ static void *run_module(void *arg) {
                              module->output_channels,
                              audioroute_get_audio_buffer(amr->shm_ptr, module->output_buffer),
                              module->musicEvents, module->numEvents, module->instance_index, &timeInfo);
+                _ASSERT(amr->context);
                 break;
         }
         //timer_settime(timer, 0, &cancel, NULL);  // Disarm timer.

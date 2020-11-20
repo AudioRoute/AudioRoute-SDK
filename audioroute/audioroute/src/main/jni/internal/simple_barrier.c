@@ -25,7 +25,8 @@
 
 #include <android/log.h>
 
-#define LOCKLOGD(...)
+#define LOCKLOGD(...) \
+  __android_log_print(ANDROID_LOG_INFO, "audioroute_lock", __VA_ARGS__)
 
 #define ONE_BILLION 1000000000
 
@@ -135,6 +136,7 @@ int sb_wait_lock(struct simple_lock_barrier_t *p, struct timespec *abstime) {
 #ifdef USE_OLD_LOCK
     sb_wait((simple_barrier_t *)&p->barrier, abstime);
 #else
+    LOGD("sb_wait_lock %llx %d", &p->barrier, p->barrier);
   int mythreadid=syscall(SYS_gettid);
     FutexVal val=__sync_val_compare_and_swap(&p->barrier, UNLOCKED_VAL, LOCKED_VAL);
     if(val==UNLOCKED_VAL) {
@@ -155,29 +157,36 @@ int sb_wait_and_reset_lock(struct simple_lock_barrier_t *p, struct timespec *abs
     return sb_wait_and_clear((simple_barrier_t *)&p->barrier, abstime);
 #else
   int mythreadid=syscall(SYS_gettid);
+  LOGD("sb_wait_and_reset_lock %llx %d runid %d", &p->barrier, p->barrier, p->runnerThreadId);
+  _ASSERT(p->runnerThreadId>=10);
   FutexVal val=__sync_val_compare_and_swap(&p->barrier, UNLOCKED_VAL, LOCKED_VAL);
   if(val==UNLOCKED_VAL) {
-      LOCKLOGD("Wait was unlocked %d\n", (int)LOCKED_VAL);
+      LOCKLOGD("Wait was unlocked rs %d runner %d", (int)LOCKED_VAL, p->runnerThreadId);
 
       // Reset the lock back to unsignalled from the old owner
-      LOCKLOGD("AFTER WAIT: %d restoring %d\n", val, p->runnerThreadId);
+      LOCKLOGD("AFTER WAIT unlocked: %d restoring %d\n", val, p->runnerThreadId);
       if(__sync_bool_compare_and_swap(&p->barrier, LOCKED_VAL, p->runnerThreadId)) {
           return 0;
       }
       else {
-          LOCKLOGD("AFTER WAIT: FAILED restoring lock %d %d\n", val, p->runnerThreadId);
+          LOCKLOGD("AFTER WAIT free: FAILED restoring lock %d %d\n", val, p->runnerThreadId);
       }
   }
   LOCKLOGD("WAIT: %d mythread: %d\n", val, mythreadid);
 
-  futex_wait_lock(p, abstime, LOCKED_VAL);
+  int retlock=futex_wait_lock(p, abstime, LOCKED_VAL);
+  LOCKLOGD("futex_wait_lock returned %d", retlock);
 
   // After the futex wait the futex value should be FUTEX_WAITERS|TID, so we now own the lock and can operate on it non-atomically!?
   // Restore to how it was prior to the wait
   FutexVal  newval=__sync_or_and_fetch(&p->barrier, 0);
     int ret=(newval&(~FUTEX_WAITERS))==LOCKED_VAL ? 0 : -1;
-    LOCKLOGD("AFTER WAIT: %d restoring %d\n", newval, val);
+    LOCKLOGD("AFTER WAIT: %d restoring %d runid %d\n", newval, val, p->runnerThreadId);
   if(__sync_bool_compare_and_swap(&p->barrier, newval, val)) {
+#ifndef NDEBUG
+    FutexVal  currentval=__sync_or_and_fetch(&p->barrier, 0);
+    LOCKLOGD("AFTER WAIT restore ok val: %d runid %d", currentval, p->runnerThreadId);
+#endif
     return ret;
   }
   return -2;
@@ -185,6 +194,7 @@ int sb_wait_and_reset_lock(struct simple_lock_barrier_t *p, struct timespec *abs
 }
 
 int sb_wake_lock(struct simple_lock_barrier_t *p) {
+  LOCKLOGD("sb_wake_lock %d", p->runnerThreadId);
 #ifdef USE_OLD_LOCK
     return sb_wake((simple_barrier_t *)&p->barrier);
 #else
@@ -206,7 +216,13 @@ int sb_wake_lock(struct simple_lock_barrier_t *p) {
 #endif
 }
 
+void sb_init_lock(struct simple_lock_barrier_t *p, int threadid) {
+#ifndef USE_OLD_LOCK
+  p->runnerThreadId=threadid;
+#endif
+}
 void sb_clobber_lock(struct simple_lock_barrier_t *p) {
+  LOCKLOGD("sb_clobber_lock");
 #ifdef USE_OLD_LOCK
     return sb_clobber((simple_barrier_t *)&p->barrier);
 #else
@@ -218,4 +234,10 @@ void sb_clobber_lock(struct simple_lock_barrier_t *p) {
 
   p->runnerThreadId=mythreadid; // Assign it here so that sb_wait_and_reset_lock can reset it when it founds the lock open
 #endif
+}
+
+void sb_sanity_check_log(struct simple_lock_barrier_t *p, char *msg)
+{
+    _ASSERT(p->runnerThreadId>10);
+  LOCKLOGD("Lock check %s %d %d", msg, p->barrier, p->runnerThreadId);
 }

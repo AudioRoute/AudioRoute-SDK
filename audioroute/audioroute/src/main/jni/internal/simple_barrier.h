@@ -34,6 +34,12 @@
 #define LOGD(...) \
   __android_log_print(ANDROID_LOG_DEBUG, "audioroute_internal", __VA_ARGS__)
 
+#ifdef NDEBUG
+#define _ASSERT(x)
+#else
+#define _ASSERT(x) { if(!x) raise(SIGTRAP); }
+#endif
+
 //#define USE_OLD_LOCK
 #ifdef USE_OLD_LOCK
 #define AUDIOROUTE_LOCK_TIMEBASE CLOCK_MONOTONIC
@@ -84,7 +90,8 @@ int sb_wait_lock(struct simple_lock_barrier_t *p, struct timespec *abstime);
 int sb_wait_and_reset_lock(struct simple_lock_barrier_t *p, struct timespec *abstime);
 int sb_wake_lock(struct simple_lock_barrier_t *p);
 void sb_clobber_lock(struct simple_lock_barrier_t *p);
-
+void sb_init_lock(struct simple_lock_barrier_t *p, int runnerTid);
+void sb_sanity_check_log(struct simple_lock_barrier_t *p, char *msg);
 #ifdef __cplusplus
 }
 #endif
