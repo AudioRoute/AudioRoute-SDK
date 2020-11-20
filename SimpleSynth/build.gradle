@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     // Switch which of the two lines below are commented to change from using the Maven version of the Audioroute lib to the one built from sources
     implementation project(':audioroute')
     //implementation 'com.ntrack.audioroute:audioroute:1.0.0'

@@ -18,8 +18,13 @@ delayeffect/.DS_Store
 *.iml
 .idea/caches
 .idea/modules.xml
+.idea/workspace.xml
+.idea/libraries
+audioroute/.idea/workspace.xml
 audioroute/include/*
 audioroute/lib/*
 mapping.zip
 audioroute/build.zip
 *.cxx
+non-repo
+local.properties
