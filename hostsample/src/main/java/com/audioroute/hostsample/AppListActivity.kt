@@ -18,16 +18,16 @@ package com.audioroute.hostsample
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
-import android.support.v7.app.AppCompatActivity
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.Toast
 import com.ntrack.audioroute.AudioRouteHostController
-import android.provider.MediaStore.Images.Media.getBitmap
-
 
 
 class AppListActivity: AppCompatActivity() {
@@ -37,7 +37,7 @@ class AppListActivity: AppCompatActivity() {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var hostController: AudioRouteHostController
 
-    private fun partItemClicked(data : MyData) {
+    private fun partItemClicked(data: MyData) {
 
         val returnIntent = Intent()
         returnIntent.putExtra("result", data.packageName)
@@ -62,6 +62,13 @@ class AppListActivity: AppCompatActivity() {
 
     }
 
+    private fun getBitmapFromDrawable(drawable: Drawable): Bitmap? {
+        val bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bmp)
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+        drawable.draw(canvas)
+        return bmp
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_list)
@@ -79,21 +86,24 @@ class AppListActivity: AppCompatActivity() {
         hostController.scanInstalledModules(this, AudioRouteHostController.ScanModulesListener {
             val items = ArrayList<MyData>()
 
-            if(requestCode==INPUT_CONNECTION) //Mic
+            if (requestCode == INPUT_CONNECTION) //Mic
                 items.add(MyData("Microphone", "Mic", BitmapFactory.decodeResource(resources, R.drawable.mic)))
 
-            if(requestCode==OUTPUT_CONNECTION)//Speakers
+            if (requestCode == OUTPUT_CONNECTION)//Speakers
                 items.add(MyData("Speakers", "Spk", BitmapFactory.decodeResource(resources, R.drawable.speakers)))
 
-            for(item:AudioRouteHostController.ModuleInfo in it.orEmpty()) {
+            for (item: AudioRouteHostController.ModuleInfo in it.orEmpty()) {
 
-                val bitmap = (hostController.getPackageIcon(item.packagename) as BitmapDrawable).bitmap
-
-                if (FilterApp(requestCode, item))
-                    items.add(MyData(item.friendlyName, item.packagename, bitmap))
+                if (FilterApp(requestCode, item)) {
+                    var bitmap = getBitmapFromDrawable(hostController.getPackageIcon(item.packagename));
+                    if(bitmap!=null) {
+                        var bmp : Bitmap = bitmap;
+                        items.add(MyData(item.friendlyName, item.packagename, bmp))
+                    }
+                }
             }
 
-            viewAdapter = RecyclerViewAdapter(items, { data : MyData -> partItemClicked(data) })
+            viewAdapter = RecyclerViewAdapter(items, { data: MyData -> partItemClicked(data) })
             viewManager = LinearLayoutManager(this)
 
             recyclerView = findViewById<RecyclerView>(R.id.recyclerView).apply {

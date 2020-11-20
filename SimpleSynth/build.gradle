@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.ntrack.audioroute.simplesynth"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
     }
     signingConfigs {
@@ -38,6 +38,7 @@ android {
             path "CMakeLists.txt"
         }
     }
+    ndkVersion = '20.1.5948944'
 }
 
 dependencies {

@@ -10,6 +10,24 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
+
+add_library( # Sets the name of the library.
+        audiomodule_static
+
+        # Sets the library as a shared library.
+        STATIC
+
+        # Provides a relative path to your source file(s).
+        src/main/jni/internal/audio_module.cpp
+        src/main/jni/internal/audio_module_internal.cpp
+        src/main/jni/internal/audio_module_jni.cpp
+        src/main/jni/internal/audioroute.c
+        src/main/jni/internal/shared_memory_internal.c
+        src/main/jni/internal/shared_memory_utils.c
+        src/main/jni/internal/simple_barrier.c
+        src/main/jni/opensl_stream/opensl_stream.c
+        )
+
 include_directories(src/main/jni)
 
 add_library( # Sets the name of the library.
@@ -29,6 +47,8 @@ add_library( # Sets the name of the library.
               src/main/jni/opensl_stream/opensl_stream.c
                            )
 
+
+
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
@@ -37,7 +57,6 @@ add_library( # Sets the name of the library.
 
 find_library( # Sets the name of the path variable.
               log-lib
-
               # Specifies the name of the NDK library that
               # you want CMake to locate.
               log )
@@ -48,10 +67,11 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       audiomodule
+        audiomodule
+        audiomodule_static
 
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib}
-                       OpenSLES
+        OpenSLES
                        )

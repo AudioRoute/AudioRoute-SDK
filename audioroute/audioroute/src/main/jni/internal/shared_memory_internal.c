@@ -28,27 +28,62 @@
 #include <sys/un.h>
 #include <linux/ashmem.h>
 #include <unistd.h>
+#include <android/sharedmem.h>
 
 #define LOGI(...) \
   __android_log_print(ANDROID_LOG_INFO, "shared_memory_internal", __VA_ARGS__)
 #define LOGW(...) \
   __android_log_print(ANDROID_LOG_WARN, "shared_memory_internal", __VA_ARGS__)
+#define LOGE(...) \
+  __android_log_print(ANDROID_LOG_ERROR, "shared_memory_internal", __VA_ARGS__)
 
 #define ASHMEM_MODULE "/dev/ashmem"
 #define SHARED_MEM_SIZE 262144*4
 #define SOCK_NAME "audioroute_shm_socket"
 
+#include <sys/system_properties.h>
+int GetAndroidSdkVersion()
+{
+  char osVersion[PROP_VALUE_MAX+1];
+  int osVersionLength = __system_property_get("ro.build.version.sdk", osVersion);
+  return atoi(osVersion);
+}
+
+typedef int (*pASharedMemory_create)(const char *name, size_t size);
+
+pASharedMemory_create cASharedMemory_create=NULL;
+#include <dlfcn.h>
+
+void *libAndroid=NULL;
+
 int smi_create() {
-  int fd = open(ASHMEM_MODULE, O_RDWR);
-  if (fd < 0) {
-    LOGW("Failed to open ashmem: %s", strerror(errno));
-    return -1;
+  int fd=-1;
+  if(GetAndroidSdkVersion()<27)
+     fd = open(ASHMEM_MODULE, O_RDWR);
+  else {
+    if (cASharedMemory_create == NULL) {
+      libAndroid = dlopen("libandroid.so", RTLD_NOW | RTLD_LOCAL);
+      if(NULL==libAndroid) {
+        LOGE("Could not open libandroid.so");
+        return -1;
+      }
+      cASharedMemory_create=(pASharedMemory_create)dlsym(libAndroid, "ASharedMemory_create");
+      if(NULL==cASharedMemory_create) {
+          LOGE("Could not load shared memory function");
+          return -1;
+      }
+    }
+    fd = cASharedMemory_create(NULL, SHARED_MEM_SIZE);
+    if (fd < 0) {
+      LOGW("Failed to open ashmem: %s", strerror(errno));
+      return -1;
+    }
   }
-  if (ioctl(fd, ASHMEM_SET_SIZE, SHARED_MEM_SIZE) < 0) {
+/*  if (ioctl(fd, ASHMEM_SET_SIZE, SHARED_MEM_SIZE) < 0) {
     LOGW("Failed to allocate shared memory: %s", strerror(errno));
     close(fd);
     return -1;
-  }
+  }*/
   return fd;
 }
 

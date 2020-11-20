@@ -10,13 +10,11 @@ android {
             keyAlias = 'androiddebugkey'
         }
     }
-    compileSdkVersion 26
-
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 29
 
         ndk {
             moduleName "audiomodule"
@@ -39,8 +37,17 @@ android {
             path "CMakeLists.txt"
         }
     }
+    ndkVersion = '20.1.5948944'
+        lintOptions {
+            // Turns off checks for the issue IDs you specify.
+            quiet true
+            // if set to true (default), stops the build if errors are found.
+            abortOnError false
+            // if true, only report errors.
+            ignoreWarnings true
+        }
 }
 
 dependencies {
-    implementation 'com.android.support:support-v4:26.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
 }
