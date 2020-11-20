@@ -11,9 +11,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/DelayEffect" />
             <option value="$PROJECT_DIR$/SimpleSynth" />
             <option value="$PROJECT_DIR$/audioroute" />
-            <option value="$PROJECT_DIR$/delayeffect" />
             <option value="$PROJECT_DIR$/hostsample" />
           </set>
         </option>
