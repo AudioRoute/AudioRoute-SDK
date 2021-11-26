@@ -30,6 +30,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.ParcelFileDescriptor;
@@ -395,7 +396,7 @@ public class AudioRouteHostController {
             e.printStackTrace();
         }
     }
-    public boolean scanInstalledModules(final Activity context, final ScanModulesListener listener, boolean forceScan)
+    public boolean scanInstalledModules(final Activity context, final ScanModulesListener listener, final boolean forceScan)
     {
         if(Build.VERSION.SDK_INT<23)
         {
@@ -421,31 +422,34 @@ public class AudioRouteHostController {
 
         listener.onScanFinished(modules);*/
         activity=context;
-        if(!forceScan&&isScanJsonCached(context))
-        {
-            String cached=getCachedScanJson(context);
-            if(null!=cached) scanJson(cached, context, listener);
-            return true;
-        }
-
-        new UrlTask().setListener(new UrlTask.UrlTaskListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onResponse(String response) {
-                if (null == response) {
-                    Log.d(TAG, "Got a null response");
+            public void run() {
+                if (!forceScan && isScanJsonCached(context)) {
+                    String cached = getCachedScanJson(context);
+                    if (null != cached) scanJson(cached, context, listener);
                     return;
                 }
-                if(scanJson(response, context, listener))
-                {
-                    saveJson(context, response);
-                }
-            }
 
-            @Override
-            public void onError(UrlTask.UrlError resultCode) {
+                new UrlTask().setListener(new UrlTask.UrlTaskListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (null == response) {
+                            Log.d(TAG, "Got a null response");
+                            return;
+                        }
+                        if (scanJson(response, context, listener)) {
+                            saveJson(context, response);
+                        }
+                    }
 
+                    @Override
+                    public void onError(UrlTask.UrlError resultCode) {
+
+                    }
+                }).setParams(getScanParams(context)).execute(getScanUrl(context));
             }
-        }).setParams(getScanParams(context)).execute(getScanUrl(context));
+        }).start();
         return true;
     }
     boolean scanJson(String response, final Context context, final ScanModulesListener listener)
@@ -497,7 +501,13 @@ public class AudioRouteHostController {
             Log.d(TAG, "Error parsing json: " +response);
             return false;
         }
-        listener.onScanFinished(new ArrayList<ModuleInfo>(modules.values()));
+        final HashMap<String, ModuleInfo> modulesResult=modules;
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                listener.onScanFinished(new ArrayList<ModuleInfo>(modulesResult.values()));
+            }
+        });
         return true;
     }
     public String getScanUrl(Context context)
