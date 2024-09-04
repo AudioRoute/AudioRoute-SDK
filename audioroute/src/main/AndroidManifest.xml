@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ntrack.audioroute"
-    android:versionCode="100000000"
-    android:versionName="1.0.0" >
+    android:versionCode="100000200"
+    android:versionName="1.0.2" >
 
     <application
         android:allowBackup="true"

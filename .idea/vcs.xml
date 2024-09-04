@@ -2,8 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/DelayEffect" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/SimpleSynth" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/externals/oboe" vcs="Git" />
   </component>
 </project>

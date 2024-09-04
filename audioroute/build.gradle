@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 34
 
         ndk {
             moduleName "audiomodule"
@@ -37,7 +37,7 @@ android {
             path "CMakeLists.txt"
         }
     }
-    ndkVersion = '20.1.5948944'
+    ndkVersion "26.3.11579264"
         lintOptions {
             // Turns off checks for the issue IDs you specify.
             quiet true
@@ -46,6 +46,10 @@ android {
             // if true, only report errors.
             ignoreWarnings true
         }
+    buildFeatures {
+        aidl true
+    }
+    namespace 'com.ntrack.audioroute'
 }
 
 dependencies {

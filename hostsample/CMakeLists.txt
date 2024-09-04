@@ -37,7 +37,14 @@ include_directories (${OBOE_DIR}/include)
 add_library( audiomodule SHARED IMPORTED)
 string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LCASE)
 
-set_target_properties( audiomodule PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../audioroute/build/intermediates/cmake/${CMAKE_BUILD_TYPE_LCASE}/obj/${ANDROID_ABI}/libaudiomodule.so )
+set(AUDIOROUTE_BUILDTYPE ${CMAKE_BUILD_TYPE_LCASE})
+if(${AUDIOROUTE_BUILDTYPE} STREQUAL "relwithdebinfo" )
+    set(AUDIOROUTE_BUILDTYPE "release")
+else()
+    set(AUDIOROUTE_BUILDTYPE "debug")
+endif()
+
+set_target_properties( audiomodule PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../audioroute/build/intermediates/cmake/${AUDIOROUTE_BUILDTYPE}/obj/${ANDROID_ABI}/libaudiomodule.so )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
