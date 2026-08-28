@@ -19,6 +19,11 @@ android {
         ndk {
             moduleName "audiomodule"
         }
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
     }
 
     buildTypes {
@@ -37,7 +42,7 @@ android {
             path "CMakeLists.txt"
         }
     }
-    ndkVersion "26.3.11579264"
+    ndkVersion "29.0.14206865"
         lintOptions {
             // Turns off checks for the issue IDs you specify.
             quiet true
