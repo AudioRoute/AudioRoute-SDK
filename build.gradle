@@ -1,20 +1,36 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.6.21'
+    ext.kotlin_version = '2.2.10'
 
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.3.0'
+        classpath 'com.android.tools.build:gradle:9.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
+plugins {
+    id 'maven-publish'
+    id 'signing'
+}
+
 allprojects {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
+    }
+}
+
+// Kotlin would target the JDK running Gradle, Java targets AGP's default (11): they must match
+subprojects {
+    plugins.withId('org.jetbrains.kotlin.android') {
+        kotlin {
+            compilerOptions {
+                jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+            }
+        }
     }
 }

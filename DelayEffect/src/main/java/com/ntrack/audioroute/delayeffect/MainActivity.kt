@@ -30,6 +30,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
 import com.ntrack.audioroute.AudioModule
+import com.ntrack.audioroute.AudioModuleForegroundService
 import com.ntrack.audioroute.AudiorouteActivityController
 
 class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        AudioModuleForegroundService.requestNotificationPermission(this, 1)
 
         controller= AudiorouteActivityController.getInstance()
         controller.setModuleLabel("Delay")

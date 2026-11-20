@@ -17,9 +17,11 @@
 package com.audioroute.hostsample
 
 import android.Manifest
+import android.os.Build
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
+import com.ntrack.audioroute.AudioModuleForegroundService
 import com.ntrack.audioroute.AudioRouteHostController
 
 class ModuleHosted {
@@ -34,6 +36,7 @@ class ModuleHosted {
 class AudioEngine {
 
     private val AUDIO_EFFECT_REQUEST = 0
+    private val NOTIFICATION_REQUEST = 1
 
     var engineRunning: Boolean = false
     var micConnected: Boolean = false
@@ -165,6 +168,8 @@ class AudioEngine {
             return
         }
 
+        AudioModuleForegroundService.requestNotificationPermission(activity, NOTIFICATION_REQUEST)
+
         setEngineOn(true)
         if(!isOutputConnected()) attachSpeakers()
     }
@@ -174,10 +179,13 @@ class AudioEngine {
     }
 
     private fun requestRecordPermission() {
-        ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.RECORD_AUDIO),
-                AUDIO_EFFECT_REQUEST)
+        // Ask for the notification permission in the same dialog: a second request
+        // while this one is showing would be dropped.
+        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS)
+        else
+            arrayOf(Manifest.permission.RECORD_AUDIO)
+        ActivityCompat.requestPermissions(activity, permissions, AUDIO_EFFECT_REQUEST)
     }
 
     fun attachMic() {

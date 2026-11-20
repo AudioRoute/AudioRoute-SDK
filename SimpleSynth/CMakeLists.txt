@@ -15,6 +15,8 @@ set (OBOE_DIR ../externals/oboe)
 
 # Add the Oboe library as a subdirectory in your project.
 add_subdirectory (${OBOE_DIR} ./externals/oboe)
+# This Oboe version builds with -Ofast -Werror; clang in NDK 27+ flags -Ofast as deprecated.
+target_compile_options(oboe PRIVATE -Wno-deprecated-ofast)
 
 # Specify the path to the Oboe header files.
 include_directories (${OBOE_DIR}/include)

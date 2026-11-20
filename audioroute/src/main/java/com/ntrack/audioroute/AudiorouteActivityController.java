@@ -163,7 +163,7 @@ public class AudiorouteActivityController {
     {
         connected=true;
         Log.i(TAG, "Service connected.");
-        PendingIntent pi = PendingIntent.getActivity(activityParent, 0, new Intent(activityParent, activityParent.getClass()), 0);
+        PendingIntent pi = PendingIntent.getActivity(activityParent, 0, new Intent(activityParent, activityParent.getClass()), PendingIntent.FLAG_IMMUTABLE);
         /*Notification.Builder notificationBuilder = new Notification.Builder(activityParent);
         notificationBuilder.setLargeIcon(moduleIcon);
         Notification notification=notificationBuilder.setContentTitle(moduleLabel+"-Module").setContentIntent(pi).build();*/

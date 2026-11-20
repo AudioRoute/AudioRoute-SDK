@@ -24,6 +24,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.IBinder;
@@ -79,6 +81,20 @@ public class AudioModuleForegroundService extends Service {
         startIntent.setAction(STARTFOREGROUND_ACTION);
         activity.startService(startIntent);
     }
+    /**
+     * On Android 13+ the foreground-service notification is only shown if POST_NOTIFICATIONS is
+     * granted. Call this from the app's launcher activity, not while switching between apps,
+     * otherwise the permission dialog gets dismissed.
+     */
+    public static void requestNotificationPermission(Activity activity, int requestCode)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                activity.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            activity.requestPermissions(
+                    new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, requestCode);
+        }
+    }
     public static void stopService(Activity activity)
     {
         setActivityClass(activity.getClass());
@@ -102,11 +118,11 @@ public class AudioModuleForegroundService extends Service {
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
             Intent pauseIntent = new Intent(this, AudioModuleForegroundService.class);
             pauseIntent.setAction(PAUSE_ACTION);
-            PendingIntent ppauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+            PendingIntent ppauseIntent = PendingIntent.getService(this, 0, pauseIntent, PendingIntent.FLAG_IMMUTABLE);
 
             Bitmap icon = productBitmap;
 
@@ -131,8 +147,13 @@ public class AudioModuleForegroundService extends Service {
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .addAction(android.R.drawable.ic_media_pause, "Close", ppauseIntent).build();
-            startForeground(NOTIFICATION_ID_FOREGROUND_SERVICE,
-                    notification);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 14+ requires the type to match android:foregroundServiceType in the manifest
+                startForeground(NOTIFICATION_ID_FOREGROUND_SERVICE, notification,
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+            } else {
+                startForeground(NOTIFICATION_ID_FOREGROUND_SERVICE, notification);
+            }
 
             if(null!=controller) {
                 controller.serviceStarted();

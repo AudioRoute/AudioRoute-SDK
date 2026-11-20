@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "com.ntrack.audioroute.simplesynth"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 36
     }
     signingConfigs {
         config {
@@ -18,7 +18,7 @@ android {
     }
     buildTypes {
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.config
         }
         debug {
@@ -28,7 +28,7 @@ android {
             }
         }
     }
-    lintOptions {
+    lint {
         abortOnError false
     }
 
@@ -37,7 +37,7 @@ android {
             path "CMakeLists.txt"
         }
     }
-    ndkVersion = '26.3.11579264'
+    ndkVersion = '29.0.14206865'
     namespace 'com.ntrack.audioroute.simplesynth'
 }
 

@@ -5,5 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Play me!</string>
     <string name="audiorouteservice">AudiorouteService</string>
+    <string name="use_host_keyboard">Use the keyboard on the host to play</string>
 
 </resources>

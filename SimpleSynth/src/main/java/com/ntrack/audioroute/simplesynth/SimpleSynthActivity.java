@@ -33,6 +33,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.ntrack.audioroute.AudioModule;
+import com.ntrack.audioroute.AudioModuleForegroundService;
 import com.ntrack.audioroute.AudiorouteActivity;
 import com.ntrack.audioroute.AudiorouteActivityController;
 
@@ -61,6 +62,7 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    AudioModuleForegroundService.requestNotificationPermission(this, 1);
 
     controller= AudiorouteActivityController.getInstance();
     controller.setModuleLabel(getModuleLabel());
@@ -170,6 +172,7 @@ public class SimpleSynthActivity extends Activity implements OnSeekBarChangeList
     // callback. This sample is designed to routes MIDI events only its own audio callback
     // Not to the Audioroute process callback
     findViewById(R.id.piano).setVisibility(isAudioRouteHosted ? View.INVISIBLE : View.VISIBLE);
+    findViewById(R.id.hostKeyboardHint).setVisibility(isAudioRouteHosted ? View.VISIBLE : View.INVISIBLE);
   }
 
   @Override

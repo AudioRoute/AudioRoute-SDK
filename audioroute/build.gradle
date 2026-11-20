@@ -10,11 +10,11 @@ android {
             keyAlias = 'androiddebugkey'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 36
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 36
 
         ndk {
             moduleName "audiomodule"
@@ -43,16 +43,20 @@ android {
         }
     }
     ndkVersion "29.0.14206865"
-        lintOptions {
-            // Turns off checks for the issue IDs you specify.
-            quiet true
-            // if set to true (default), stops the build if errors are found.
-            abortOnError false
-            // if true, only report errors.
-            ignoreWarnings true
-        }
+    lint {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+    }
     buildFeatures {
+        buildConfig true // AudioRouteHostController uses BuildConfig.DEBUG
         aidl true
+        prefabPublishing true
+    }
+    prefab {
+        audiomodule {
+            headers "src/main/jni"
+        }
     }
     namespace 'com.ntrack.audioroute'
 }
