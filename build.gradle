@@ -9,12 +9,9 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:9.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Publishes :audioroute to Maven Central (Central Portal), see audioroute/build.gradle
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.37.0'
     }
-}
-
-plugins {
-    id 'maven-publish'
-    id 'signing'
 }
 
 allprojects {

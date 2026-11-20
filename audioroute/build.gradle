@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply from: 'maven-push.gradle'
+apply plugin: 'com.vanniktech.maven.publish'
 
 android {
     signingConfigs {
@@ -55,7 +55,8 @@ android {
     }
     prefab {
         audiomodule {
-            headers "src/main/jni"
+            // Public API only (a copy of src/main/jni/audio_module.h, keep them in sync)
+            headers "include"
         }
     }
     namespace 'com.ntrack.audioroute'
@@ -63,4 +64,14 @@ android {
 
 dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
+}
+
+// Maven Central publishing: ./gradlew :audioroute:publishToMavenCentral
+// Coordinates and POM come from GROUP / VERSION_NAME / POM_* in ../gradle.properties and
+// ./gradle.properties. Credentials and the signing key go in ~/.gradle/gradle.properties
+// (never in this repo): mavenCentralUsername, mavenCentralPassword (Central Portal user token),
+// signing.keyId, signing.password, signing.secretKeyRingFile
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
 }
