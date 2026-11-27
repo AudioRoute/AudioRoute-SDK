@@ -67,9 +67,9 @@ inline int32_t ConvertMusicEventToRawMIDI(MusicEvent *event)
             return 0xB0|(AROUTE_MIN(event->channel, 16))|(((int32_t) (val*127))<<16)|(((int32_t)event->index)<<8);
         case EventTypePitchBend:
         {
-            int32_t valn=val * 16384;
+            int32_t valn=AROUTE_MIN((int32_t)(val * 16384), 16383); // 14 bits
             int32_t lsb=valn&0x7F;
-            int32_t msb=valn>7;
+            int32_t msb=valn>>7;
             return 0xE0 | (AROUTE_MIN(event->channel, 16)) | (msb << 16) | (lsb << 8);
         }
         case EventTypePolyPressure:
@@ -108,8 +108,7 @@ inline int GetMusicEventFromRawMIDI(int32_t midi, MusicEvent *m)
         case 0xE0:
         {
             m->eventType=EventTypePitchBend;
-            int32_t lsb=midi&0xff00;
-            lsb>>8;
+            int32_t lsb=(midi&0xff00)>>8;
             int32_t msb=midi&0xff0000;
             msb=msb>>16;
             msb=msb<<7;
