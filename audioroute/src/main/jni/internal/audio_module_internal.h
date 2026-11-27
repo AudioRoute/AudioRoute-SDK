@@ -115,6 +115,10 @@ typedef struct {
     int host_gave_up;
 
     struct AudiorouteTimeInfo timeInfo;
+
+    // The core the host's audio thread was running on when it asked for this buffer, plus one: the module's
+    // processing thread follows it (follow_host_core()). 0 when unknown, as with the hosts that don't set it
+    int host_cpu_plus_one;
 } audio_module;
 
 typedef struct {

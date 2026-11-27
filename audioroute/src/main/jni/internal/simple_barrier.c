@@ -25,8 +25,14 @@
 
 #include <android/log.h>
 
+// The lock functions run once per buffer in the audio threads of both the host and the module: logging there costs
+// more than the processing of a light module. Define AUDIOROUTE_LOG_LOCKS to debug the lock protocol
+#ifdef AUDIOROUTE_LOG_LOCKS
 #define LOCKLOGD(...) \
   __android_log_print(ANDROID_LOG_INFO, "audioroute_lock", __VA_ARGS__)
+#else
+#define LOCKLOGD(...)
+#endif
 
 #define ONE_BILLION 1000000000
 
@@ -136,7 +142,7 @@ int sb_wait_lock(struct simple_lock_barrier_t *p, struct timespec *abstime) {
 #ifdef USE_OLD_LOCK
     sb_wait((simple_barrier_t *)&p->barrier, abstime);
 #else
-    LOGD("sb_wait_lock %llx %d", &p->barrier, p->barrier);
+    LOCKLOGD("sb_wait_lock %llx %d", &p->barrier, p->barrier);
   int mythreadid=syscall(SYS_gettid);
     FutexVal val=__sync_val_compare_and_swap(&p->barrier, UNLOCKED_VAL, LOCKED_VAL);
     if(val==UNLOCKED_VAL) {
@@ -157,7 +163,7 @@ int sb_wait_and_reset_lock(struct simple_lock_barrier_t *p, struct timespec *abs
     return sb_wait_and_clear((simple_barrier_t *)&p->barrier, abstime);
 #else
   int mythreadid=syscall(SYS_gettid);
-  LOGD("sb_wait_and_reset_lock %llx %d runid %d", &p->barrier, p->barrier, p->runnerThreadId);
+  LOCKLOGD("sb_wait_and_reset_lock %llx %d runid %d", &p->barrier, p->barrier, p->runnerThreadId);
   _ASSERT(p->runnerThreadId>=10);
   FutexVal val=__sync_val_compare_and_swap(&p->barrier, UNLOCKED_VAL, LOCKED_VAL);
   if(val==UNLOCKED_VAL) {

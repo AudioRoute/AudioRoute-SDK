@@ -27,6 +27,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
+#include <sched.h>
 
 void onModuleReleased();
 
@@ -213,8 +214,6 @@ extern "C" int audioroute_process(void *engine, int index, float *bufferL, int s
   module->sample_rate=sampleRate;
     module->instance_index=instance_index;
 
-    LOGD("Eventsnum: %d", eventsNum);
-    //eventsNum=0;
     if(eventsNum>MaxEventsPerBufferLimit) eventsNum=MaxEventsPerBufferLimit;
     for(int i=0; i<eventsNum; ++i)
     {
@@ -222,6 +221,7 @@ extern "C" int audioroute_process(void *engine, int index, float *bufferL, int s
     }
     module->numEvents=eventsNum;
     module->timeInfo=*timeInfo;
+    module->host_cpu_plus_one=sched_getcpu()+1;
 
     SB_LOCK_SANITY_CHECK(audioroute_get_lock(shm_ptr, module->ready), "process events copied");
 
@@ -298,6 +298,28 @@ static void signal_handler(int sig, siginfo_t *info, void *context) {
   siglongjmp(sig_env, 1);
 }
 
+// Keeps the module's processing thread on the core of the host's audio thread. The host wakes it for each buffer and
+// sleeps until it is done, so that core is free, awake and at the clock of an audio thread, and while the host waits
+// the processing thread inherits its priority (the ready lock is a priority inheritance futex). Left to the scheduler
+// the thread, an ordinary one of an app in the background, lands mostly on the little cores at a low clock, where
+// the processing takes about twice the time (Samsung S24 FE; pinning it to the fast cores or giving it an ADPF hint
+// session did worse than leaving it alone: the fast cores it was woken on were asleep).
+// Android resets the affinity of an app's threads when it reapplies their cpuset: set again every ~half a second.
+// hostCpu is negative when the host doesn't tell, as the ones built before this did
+static void follow_host_core(int hostCpu) {
+    static const int CheckEveryBuffers=256;
+    static __thread int followedCpu=-1;
+    static __thread int buffersToCheck=0;
+    if(hostCpu<0 || hostCpu>=CPU_SETSIZE) return;
+    if(hostCpu==followedCpu && --buffersToCheck>0) return;
+    followedCpu=hostCpu;
+    buffersToCheck=CheckEveryBuffers;
+    cpu_set_t core;
+    CPU_ZERO(&core);
+    CPU_SET(hostCpu, &core);
+    sched_setaffinity(0, sizeof(cpu_set_t), &core); // Fails when the core is not among the ones the app may use: the thread stays where it is
+}
+
 static void *run_module(void *arg) {
   audio_module_runner *amr = (audio_module_runner *) arg;
   sb_wake(&amr->launched);
@@ -330,8 +352,6 @@ static void *run_module(void *arg) {
   cancel.it_value.tv_sec = 0;
   cancel.it_value.tv_nsec = 0;
 
-    AudiorouteTimeInfo timeInfo;
-
     bool abort=false;
 
     amr->alive=true;
@@ -358,7 +378,6 @@ static void *run_module(void *arg) {
           audioroute_collect_input(amr->shm_ptr, amr->index);*/
       //timer_settime(timer, 0, &timeout, NULL);  // Arm timer.
 
-      LOGW("Callback: %d", module->callbackType);
       _ASSERT(amr->context);
         switch(module->callbackType) {
             case CALLBACK_TYPE_KEEPALIVE:
@@ -385,12 +404,13 @@ static void *run_module(void *arg) {
                 }
                 break;
             default:
+                follow_host_core(module->host_cpu_plus_one-1);
                 amr->process(amr->context, module->sample_rate, module->buffer_frames,
                              module->input_channels,
                              audioroute_get_audio_buffer(amr->shm_ptr, module->input_buffer),
                              module->output_channels,
                              audioroute_get_audio_buffer(amr->shm_ptr, module->output_buffer),
-                             module->musicEvents, module->numEvents, module->instance_index, &timeInfo);
+                             module->musicEvents, module->numEvents, module->instance_index, &module->timeInfo);
                 _ASSERT(amr->context);
                 break;
         }
