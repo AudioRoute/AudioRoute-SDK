@@ -8,13 +8,18 @@
 #
 # Usage:
 #   .\publish-maven.ps1 -Properties G:\path\to\private\maven\gradle.properties
+#       uploads and releases automatically once Central Portal validation passes.
+#       A released version is permanent: it can never be changed or deleted.
+#   .\publish-maven.ps1 -Properties ... -Task :audioroute:publishToMavenCentral
+#       uploads only; release it by pressing "Publish" under Deployments on
+#       central.sonatype.com (or "Drop" to discard it)
 #   .\publish-maven.ps1 -Properties ... -Task :audioroute:publishToMavenLocal   # dry run
 #
 # Requires JAVA_HOME to point to JDK 17 or 21 (Gradle 9 does not run on newer JDKs).
 
 param(
     [string]$Properties = (Join-Path $PSScriptRoot '..\private\maven\gradle.properties'),
-    [string]$Task = ':audioroute:publishToMavenCentral'
+    [string]$Task = ':audioroute:publishAndReleaseToMavenCentral'
 )
 $ErrorActionPreference = 'Stop'
 
